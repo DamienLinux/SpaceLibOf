@@ -205,7 +205,7 @@ public class AppLourdClient {
                     break;
                 case 5:
                     System.out.println("Accès à la carte");
-                    //indiquerArrivee();
+                    visualiserCarte();
                     break;
                 default:
                     executionEnCours = false;
