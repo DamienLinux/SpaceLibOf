@@ -35,6 +35,7 @@ public class Navette implements Serializable {
 
     @NotNull
     int nbPassagersMaximum;
+    
     @OneToMany(mappedBy = "navette")
     private List<Revision> revisions;
     @OneToMany(mappedBy = "navette")

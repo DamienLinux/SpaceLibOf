@@ -49,7 +49,7 @@ public class CompteFacade extends AbstractFacade<Compte> implements CompteFacade
         Root<Compte> root = query.from(Compte.class);
         query.where(build.equal(root.get("identifiant"), identifiant));
         comptes = getEntityManager().createQuery(query).getResultList();
-        if (comptes != null || comptes.size() > 0) {
+        if (comptes != null && comptes.size() > 0) {
             return comptes.get(0);
         } //else
         return null;
