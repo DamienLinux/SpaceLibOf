@@ -5,6 +5,7 @@
  */
 package fr.miage.m1.server.services;
 
+import fr.miage.m1.server.entities.Station;
 import fr.miage.m1.server.metier.GestionStationLocal;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationExistanteException;
@@ -31,4 +32,10 @@ public class ServicesStation implements ServicesStationLocal {
                        RoleInvalideException{
         gestionStation.ajouterStation(infosCompte, nom, localisation, nbQuais);
     }
+
+    public List<Station> listeStations() {
+        return gestionStation.listeStations();
+    }
+    
+    
 }

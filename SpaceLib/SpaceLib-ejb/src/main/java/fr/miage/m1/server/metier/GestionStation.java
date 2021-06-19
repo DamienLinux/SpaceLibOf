@@ -38,7 +38,11 @@ public class GestionStation implements GestionStationLocal {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     
-     @Override
+    public List<Station> listeStations() {
+        return stationFacade.findAll();
+    }
+    
+    @Override
     public void ajouterStation(String[] infosCompte, String nom, String localisation, int nbQuais)
                 throws TokenInvalideException, StationExistanteException,
                        RoleInvalideException {
