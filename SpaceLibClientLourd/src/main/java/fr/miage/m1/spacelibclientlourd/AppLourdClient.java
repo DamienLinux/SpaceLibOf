@@ -65,6 +65,7 @@ public class AppLourdClient {
         service = new ServiceClient();
         compteRMIService = new RMICompteServiceManager();
         navetteRMIService = new RMINavetteServiceManager();
+        stationRMIService = new RMIStationServiceManager();
     }
 
     public void authentifier() {
@@ -163,7 +164,7 @@ public class AppLourdClient {
     public void visualiserCarte() {
         
         try {
-            System.out.println(stationRMIService.getServiceStationRemote().listeStations());
+            System.out.println(stationRMIService.getServiceStationRemote().carteStations());
         } catch (TokenInvalideException ex) {
             System.out.println(ERREUR_ACCES_NON_AUTORISE);
         }
@@ -177,7 +178,7 @@ public class AppLourdClient {
         executionEnCours = true;
         do {
             if (token != null) {
-                choix = service.saisieNombre(TEXTE_MENU_CONNECTE, 1, 5);
+                choix = service.saisieNombre(TEXTE_MENU_CONNECTE, 1, 6);
             } else {
                 choix = service.saisieNombre(TEXTE_MENU_NON_CONNECTE, 1, 3);
             }

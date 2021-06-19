@@ -17,6 +17,6 @@ import javax.ejb.Remote;
 @Remote
 public interface ServicesStationRemoteRemote {
 
-    public String listeStations() throws TokenInvalideException;
+    public String carteStations() throws TokenInvalideException;
       
 }

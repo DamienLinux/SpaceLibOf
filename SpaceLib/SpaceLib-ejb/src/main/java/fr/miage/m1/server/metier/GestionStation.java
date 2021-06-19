@@ -38,8 +38,17 @@ public class GestionStation implements GestionStationLocal {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     
-    public List<Station> listeStations() {
-        return stationFacade.findAll();
+    public String carteStations() {
+        
+        
+        List<Station> listeStations = stationFacade.findAll();
+        
+        String carte = "";
+        
+        for (Station station : listeStations) {
+            carte += "Station " + station.getNom() + " : " + station.getLocalisation() + '\n';
+        }
+        return carte;
     }
     
     @Override

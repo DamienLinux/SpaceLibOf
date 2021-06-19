@@ -16,7 +16,7 @@ import javax.naming.NamingException;
  */
 public class RMIStationServiceManager implements RMIServiceManager {
     
-    private final String REMOTE_COLL_URL = "fr.miage.m1.shared.services.ServicesNavetteRemoteRemote";
+    private final String REMOTE_COLL_URL = "fr.miage.m1.shared.services.ServicesStationRemoteRemote";
     
     private InitialContext namingContext;
     

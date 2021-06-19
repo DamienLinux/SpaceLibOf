@@ -23,5 +23,5 @@ public interface GestionStationLocal {
             throws TokenInvalideException, StationExistanteException,
             RoleInvalideException;
 
-    public List<Station> listeStations();
+    public String carteStations();
 }

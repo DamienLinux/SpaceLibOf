@@ -27,15 +27,9 @@ public class ServicesStationRemote implements ServicesStationRemoteRemote {
      
     
     @Override
-    public String listeStations() throws TokenInvalideException{
-        List<Station> listeStations = gestionStation.listeStations();
-        String carte = "";
-        
-        for (Station station : listeStations) {
-            carte += "Station " + station.getNom() + " à " + station.getLocalisation() + '\n';
-        }
-        
-        return carte;
+    public String carteStations() throws TokenInvalideException{
+        return gestionStation.carteStations();
+       
     }
     
 }
