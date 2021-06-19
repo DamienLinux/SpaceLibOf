@@ -7,6 +7,7 @@ package fr.miage.m1.server.facades;
 
 import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
+import fr.miage.m1.server.entities.Voyage;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -66,5 +67,13 @@ public class QuaiFacade extends AbstractFacade<Quai> implements QuaiFacadeLocal 
         quais = getEntityManager().createQuery(query).getResultList();
         return quais.get(0);
     }
-    
+
+    @Override
+    public void ajouterVoyage(Quai depart, Quai destination, Voyage voyage) {
+        depart.ajouterVoyagesDepart(voyage);
+        destination.ajouterVoyagesADestination(voyage);
+        depart.setNavette(null); // La Navette quitte le quai
+        edit(depart);
+        edit(destination);
+    }
 }

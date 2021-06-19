@@ -6,11 +6,13 @@
 package fr.miage.m1.server.entities;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 /**
@@ -19,6 +21,38 @@ import javax.persistence.OneToOne;
  */
 @Entity
 public class Quai implements Serializable {
+
+    @OneToMany(mappedBy = "voyagesADestination")
+    private List<Voyage> voyagesADestination;
+    
+    @OneToMany(mappedBy = "depart")
+    private List<Voyage> voyagesDepart;
+    @OneToMany(mappedBy = "quai")
+    private List<Revision> revisions;
+
+    public List<Revision> getRevisions() {
+        return revisions;
+    }
+
+    public void setRevisions(List<Revision> revisions) {
+        this.revisions = revisions;
+    }
+
+    public List<Voyage> getVoyagesDepart() {
+        return voyagesDepart;
+    }
+
+    public void setVoyagesDepart(List<Voyage> voyagesDepart) {
+        this.voyagesDepart = voyagesDepart;
+    }
+
+    public List<Voyage> getVoyagesADestination() {
+        return voyagesADestination;
+    }
+
+    public void setVoyagesADestination(List<Voyage> voyages) {
+        this.voyagesADestination= voyages;
+    }
 
     public Quai(Station station) {
         this.station = station;
@@ -87,4 +121,15 @@ public class Quai implements Serializable {
         return "fr.miage.m1.server.entities.Quai[ id=" + id + " ]";
     }
     
+    public void ajouterVoyagesADestination(Voyage voyage) {
+        voyagesADestination.add(voyage);
+    }
+    
+    public void ajouterVoyagesDepart(Voyage voyage) {
+        voyagesDepart.add(voyage);
+    }
+    
+    public void ajouterRevision(Revision revision) {
+        revisions.add(revision);
+    }
 }

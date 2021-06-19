@@ -7,6 +7,7 @@ package fr.miage.m1.server.facades;
 
 import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
+import fr.miage.m1.server.entities.Voyage;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -34,4 +35,6 @@ public interface QuaiFacadeLocal {
     public Station creerQuais(Station station, int nbQuais);
     
     public Quai attributionQuai(Station station);
+    
+    public void ajouterVoyage(Quai depart, Quai destination, Voyage voyage);
 }

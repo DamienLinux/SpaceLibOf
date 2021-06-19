@@ -21,10 +21,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Station implements Serializable {
 
-    
-    @OneToMany(mappedBy = "destination")
-    private List<Navette> navettes;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -69,10 +65,6 @@ public class Station implements Serializable {
         this.nom = nom;
     }
 
-    public List<Navette> getNavettes() {
-        return navettes;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -108,14 +100,16 @@ public class Station implements Serializable {
     
     public int quaisDisponibles() {
         int nbQuaisDisponibles;
+        List<Voyage> voyages;
         
         nbQuaisDisponibles = 0;
         for (int i = 0 ; i < quais.size() ; i++) {
-            if (quais.get(i).getNavette() == null) {
+            voyages = quais.get(i).getVoyagesADestination();
+            if (quais.get(i).getNavette() == null 
+                && (voyages == null || voyages.get(voyages.size() - 1).isEnCours())) {
                 nbQuaisDisponibles++;
             }
         }
-        /* On supprime les navettes qui sont à destination de la station */
-        return (nbQuaisDisponibles - navettes.size());
+        return nbQuaisDisponibles;
     }
 }

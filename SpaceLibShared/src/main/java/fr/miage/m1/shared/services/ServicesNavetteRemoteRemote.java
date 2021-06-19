@@ -7,9 +7,12 @@ package fr.miage.m1.shared.services;
 
 import fr.miage.m1.shared.exceptions.AucuneDestinationException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
+import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
+import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.ReservationExistanteException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
+import java.text.ParseException;
 import java.util.List;
 import javax.ejb.Remote;
 
@@ -19,20 +22,13 @@ import javax.ejb.Remote;
  */
 @Remote
 public interface ServicesNavetteRemoteRemote {
-    public void voyageInitie(String[] infosCompte, String navette, String destination)
-                throws TokenInvalideException, NavetteInexistanteException,
-                       StationInexistanteException ;
-    
     public void voyageAcheve(String[] infosCompte)
                 throws TokenInvalideException ;
     
-    public List<String> recupererListeNavettes(String[] infosCompte)
-                        throws TokenInvalideException;
-    
-    public String recupererInformationDestination(String[] infosCompte, String navette)
-                  throws TokenInvalideException, NavetteInexistanteException;
-    
-    public void reserve(String[] infosCompte, String navette)
+    public void reserve(String[] infosCompte, String stationAttachement, String destination, 
+                        String dateArrivee, int nbPassagers)
                 throws TokenInvalideException, NavetteInexistanteException,
-                       ReservationExistanteException, AucuneDestinationException;
+                       AucuneDestinationException, QuaiIndisponibleException,
+                       StationInexistanteException, NavettesIndisponibleException,
+                       ParseException;
 }

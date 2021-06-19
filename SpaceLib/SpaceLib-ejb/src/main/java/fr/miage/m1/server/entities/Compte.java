@@ -6,12 +6,15 @@
 package fr.miage.m1.server.entities;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -36,6 +39,31 @@ public class Compte implements Serializable {
     
     @NotNull
     public String role;
+    @OneToMany(mappedBy = "mecanicienEnCharge")
+    private List<Revision> revisions;
+
+    public List<Revision> getRevisions() {
+        return revisions;
+    }
+
+    public void setRevisions(List<Revision> revisions) {
+        this.revisions = revisions;
+    }
+
+    public List<Operation> getOperations() {
+        return operations;
+    }
+
+    public void setOperations(List<Operation> operations) {
+        this.operations = operations;
+    }
+    
+    public void ajouterOperation(Operation operation) {
+        operations.add(operation);
+    }
+    
+    @OneToMany(mappedBy = "compte")
+    private List<Operation> operations;
 
     public String getRole() {
         return role;
@@ -64,7 +92,7 @@ public class Compte implements Serializable {
     }
     
     
-    @ManyToOne
+    @OneToOne(mappedBy = "compte")
     public Navette navette;
 
     public Navette getNavette() {
@@ -132,6 +160,10 @@ public class Compte implements Serializable {
     @Override
     public String toString() {
         return "com.mycompany.entities.Compte[ id=" + id + " ]";
+    }
+    
+    public void ajouterRevision(Revision revision) {
+        revisions.add(revision);
     }
     
 }

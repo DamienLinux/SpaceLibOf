@@ -5,7 +5,10 @@
  */
 package fr.miage.m1.server.facades;
 
+import fr.miage.m1.server.entities.Navette;
+import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
+import java.util.ArrayList;
 import javax.ejb.Stateless;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -53,6 +56,38 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
         Station station = new Station(nom);
         create(station);
         return station;
+    }
+
+    @Override
+    public Navette findNavetteDisponible(Station station) {
+        List<Navette> navettesDisponibles;
+        int choixNavette;
+        
+        navettesDisponibles = new ArrayList<Navette>();
+        for (int i = 0 ; i < station.getQuais().size() ; i++) {
+            if (station.getQuais().get(i).getNavette() != null) {
+                navettesDisponibles.add(station.getQuais().get(i).getNavette());
+            }
+        }
+        /* Retourne une des navettes aléatoirement */
+        choixNavette = (int) (Math.random() * (station.getQuais().size() - 1));
+        return navettesDisponibles.get(choixNavette);
+    }
+
+    @Override
+    public Quai findQuaiDisponible(Station station) {
+        List<Quai> quaisDisponibles;
+        int choixQuais;
+        
+        quaisDisponibles = new ArrayList<Quai>();
+        for (int i = 0 ; i < station.getQuais().size() ; i++) {
+            if (station.getQuais().get(i).getNavette() == null) {
+                quaisDisponibles.add(station.getQuais().get(i));
+            }
+        }
+        /* Retourne un quais aléatoirement */
+        choixQuais = (int) (Math.random() * (station.getQuais().size() - 1));
+        return quaisDisponibles.get(choixQuais);
     }
     
 }

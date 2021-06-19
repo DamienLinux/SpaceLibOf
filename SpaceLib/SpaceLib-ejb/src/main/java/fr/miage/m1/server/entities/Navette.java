@@ -32,14 +32,37 @@ public class Navette implements Serializable {
     private String nom;
     
     private boolean aReviser;
-    
-    private boolean revisionEnCours;
-    
-    @ManyToOne
-    private Station destination;
+
+    public List<Revision> getRevisions() {
+        return revisions;
+    }
+
+    public void setRevisions(List<Revision> revisions) {
+        this.revisions = revisions;
+    }
+
+    public List<Voyage> getVoyages() {
+        return voyages;
+    }
+
+    public void setVoyages(List<Voyage> voyages) {
+        this.voyages = voyages;
+    }
+
+    public Quai getQuai() {
+        return quai;
+    }
+
+    public void setQuai(Quai quai) {
+        this.quai = quai;
+    }
     
     @NotNull
     int nbPassagersMaximum;
+    @OneToMany(mappedBy = "navette")
+    private List<Revision> revisions;
+    @OneToMany(mappedBy = "navette")
+    private List<Voyage> voyages;
 
     public int getNbPassagersMaximum() {
         return nbPassagersMaximum;
@@ -50,8 +73,16 @@ public class Navette implements Serializable {
     }
     
     
-    @OneToMany(mappedBy = "navette")
-    private List<Compte> comptes;
+    @OneToOne
+    private Compte compte;
+
+    public Compte getCompte() {
+        return compte;
+    }
+
+    public void setCompte(Compte compte) {
+        this.compte = compte;
+    }
     
     @OneToMany(mappedBy = "navette")
     private List<Operation> operations;
@@ -67,26 +98,6 @@ public class Navette implements Serializable {
         this.nom = nom;
         this.nbPassagersMaximum = nbPassagersMaximum;
         this.quai = quai;
-    }
-
-    public List<Compte> getComptes() {
-        return comptes;
-    }
-
-    public void setComptes(List<Compte> comptes) {
-        this.comptes = comptes;
-    }
-    
-    public void addCompte(Compte compte) {
-        comptes.add(compte);
-    }
-    
-    public void removeCompte(Compte compte) {
-        comptes.remove(compte);
-    }
-    
-    public boolean compteExist(Compte compte) {
-        return comptes.contains(compte);
     }
 
     public Long getId() {
@@ -111,22 +122,6 @@ public class Navette implements Serializable {
 
     public void setaReviser(boolean aReviser) {
         this.aReviser = aReviser;
-    }
-
-    public boolean isRevisionEnCours() {
-        return revisionEnCours;
-    }
-
-    public void setRevisionEnCours(boolean revisionEnCours) {
-        this.revisionEnCours = revisionEnCours;
-    }
-
-    public Station getDestination() {
-        return destination;
-    }
-
-    public void setDestination(Station destination) {
-        this.destination = destination;
     }
 
     public List<Operation> getOperations() {
@@ -158,8 +153,16 @@ public class Navette implements Serializable {
         return "com.mycompany.entities.Navette[ id=" + id + " ]";
     }
     
-    public void ajouterOperation(String value) {
-        operations.add(new Operation(value, this));
+    public void ajouterOperation(Operation operation) {
+        operations.add(operation);
+    }
+    
+    public void ajouterVoyage(Voyage voyage) {
+        voyages.add(voyage);
+    }
+    
+    public void ajouterRevision(Revision revision) {
+        revisions.add(revision);
     }
     
 }

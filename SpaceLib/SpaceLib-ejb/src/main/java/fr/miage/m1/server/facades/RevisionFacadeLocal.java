@@ -7,7 +7,7 @@ package fr.miage.m1.server.facades;
 
 import fr.miage.m1.server.entities.Compte;
 import fr.miage.m1.server.entities.Navette;
-import fr.miage.m1.server.entities.Operation;
+import fr.miage.m1.server.entities.Revision;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,21 +16,21 @@ import javax.ejb.Local;
  * @author DamienAvetta-Raymond
  */
 @Local
-public interface OperationFacadeLocal {
+public interface RevisionFacadeLocal {
 
-    void create(Operation operation);
+    void create(Revision revision);
 
-    void edit(Operation operation);
+    void edit(Revision revision);
 
-    void remove(Operation operation);
+    void remove(Revision revision);
 
-    Operation find(Object id);
+    Revision find(Object id);
 
-    List<Operation> findAll();
+    List<Revision> findAll();
 
-    List<Operation> findRange(int[] range);
+    List<Revision> findRange(int[] range);
 
     int count();
     
-    public Operation ajouterOperation(Navette navette, String value);
+    public Revision creationRevision(Navette navette, Compte compte);
 }

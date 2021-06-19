@@ -11,22 +11,62 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
 /**
  *
  * @author DamienAvetta-Raymond
  */
 @Entity
-public class Operation implements Serializable {
+public class Revision implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    @ManyToOne
+    private Compte mecanicienEnCharge;
+    
+    @ManyToOne
+    private Quai quai;
+    
+    public Revision() {
+    }
+    
+    public Revision(Navette navette, Quai quai, Compte mecanicienEnCharge) {
+        this.navette = navette;
+        this.quai = quai;
+        this.mecanicienEnCharge = mecanicienEnCharge;
+    }
 
-    @NotNull
-    private String operation;
+    public Quai getQuai() {
+        return quai;
+    }
+
+    public void setQuai(Quai quai) {
+        this.quai = quai;
+    }
+    
+    private boolean enCours;
+
+    public boolean isEnCours() {
+        return enCours;
+    }
+
+    public void setEnCours(boolean enCours) {
+        this.enCours = enCours;
+    }
+    
+    @ManyToOne
+    private Navette navette;
+
+    public Compte getMecanicienEnCharge() {
+        return mecanicienEnCharge;
+    }
+
+    public void setMecanicienEnCharge(Compte mecanicienEnCharge) {
+        this.mecanicienEnCharge = mecanicienEnCharge;
+    }
 
     public Navette getNavette() {
         return navette;
@@ -36,47 +76,12 @@ public class Operation implements Serializable {
         this.navette = navette;
     }
 
-    public Compte getCompte() {
-        return compte;
-    }
-
-    public void setCompte(Compte compte) {
-        this.compte = compte;
-    }
-    
-    
-    
-    @ManyToOne
-    private Navette navette;
-    @ManyToOne
-    private Compte compte;
-
-    public Operation() {
-    }
-    
-    public Operation(String value) {
-        operation = value;
-    }
-    
-    public Operation(String operation, Navette navette) {
-        this.operation = operation;
-        this.navette = navette;
-    }
-    
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getOperation() {
-        return operation;
-    }
-
-    public void setOperation(final String operation) {
-        this.operation = operation;
     }
 
     @Override
@@ -89,10 +94,10 @@ public class Operation implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Operation)) {
+        if (!(object instanceof Revision)) {
             return false;
         }
-        Operation other = (Operation) object;
+        Revision other = (Revision) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -101,7 +106,7 @@ public class Operation implements Serializable {
 
     @Override
     public String toString() {
-        return "com.mycompany.entities.Operation[ id=" + id + " ]";
+        return "fr.miage.m1.server.entities.Revision[ id=" + id + " ]";
     }
     
 }

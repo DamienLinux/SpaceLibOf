@@ -5,6 +5,8 @@
  */
 package fr.miage.m1.server.facades;
 
+import fr.miage.m1.server.entities.Navette;
+import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
 import java.util.List;
 import javax.ejb.Local;
@@ -34,4 +36,7 @@ public interface StationFacadeLocal {
     
     public Station creerStation(String nom);
     
+    public Navette findNavetteDisponible(Station station);
+    
+    public Quai findQuaiDisponible(Station station);
 }

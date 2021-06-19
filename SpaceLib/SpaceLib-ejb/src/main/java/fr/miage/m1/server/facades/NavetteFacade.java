@@ -8,6 +8,7 @@ package fr.miage.m1.server.facades;
 import fr.miage.m1.server.entities.Navette;
 import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
+import fr.miage.m1.server.entities.Voyage;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -43,6 +44,7 @@ public class NavetteFacade extends AbstractFacade<Navette> implements NavetteFac
         return null;
     }
     
+    @Override
     public Navette findByName(String nom) {
         List<Navette> navettes;
         
@@ -60,12 +62,6 @@ public class NavetteFacade extends AbstractFacade<Navette> implements NavetteFac
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-
-    @Override
-    public void ajouterDestination(Navette navette, Station station) {
-        navette.setDestination(station);
-    }
-
     @Override
     public List<Navette> listNavettes() {
         List<Navette> navettes;
@@ -104,5 +100,11 @@ public class NavetteFacade extends AbstractFacade<Navette> implements NavetteFac
         create(navetteAAjouter);
         return navetteAAjouter;
     }
-    
+
+    @Override
+    public void ajouterVoyage(Navette navette, Voyage voyage) {
+        navette.ajouterVoyage(voyage);
+        navette.setQuai(null); // La Navette quitte le quai
+        edit(navette);
+    }
 }

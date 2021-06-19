@@ -7,24 +7,33 @@ package fr.miage.m1.server.metier;
 
 import fr.miage.m1.server.entities.Compte;
 import fr.miage.m1.server.entities.Navette;
+import fr.miage.m1.server.entities.Operation;
 import fr.miage.m1.server.entities.Quai;
+import fr.miage.m1.server.entities.Revision;
 import fr.miage.m1.server.entities.Station;
+import fr.miage.m1.server.entities.Voyage;
 import fr.miage.m1.server.facades.CompteFacadeLocal;
 import fr.miage.m1.server.facades.NavetteFacadeLocal;
 import fr.miage.m1.server.facades.OperationFacadeLocal;
 import fr.miage.m1.server.facades.QuaiFacadeLocal;
+import fr.miage.m1.server.facades.RevisionFacadeLocal;
 import fr.miage.m1.server.facades.StationFacadeLocal;
+import fr.miage.m1.server.facades.VoyageFacadeLocal;
 import fr.miage.m1.shared.exceptions.AucuneDestinationException;
 import fr.miage.m1.shared.exceptions.NavetteExistanteException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePasAReviserException;
+import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
 import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.ReservationExistanteException;
 import fr.miage.m1.shared.exceptions.RevisionInexistanteException;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -35,6 +44,12 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class GestionNavette implements GestionNavetteLocal {
+
+    @EJB
+    private RevisionFacadeLocal revisionFacade;
+
+    @EJB
+    private VoyageFacadeLocal voyageFacade;
 
     @EJB
     private QuaiFacadeLocal quaiFacade;
@@ -58,6 +73,8 @@ public class GestionNavette implements GestionNavetteLocal {
     
     private final String VOYAGE_ACHEVE = "Voyage achevé.";
     
+    private final String REVISION_NECESSAIRE = "Révision nécessaire.";
+    
     private final String DEBUT_REVISION = "Début révision.";
     
     private final String FIN_REVISION = "Fin révision.";
@@ -76,38 +93,58 @@ public class GestionNavette implements GestionNavetteLocal {
     
     private final String ERREUR_QUAI_INDISPONIBLE = "Erreur 13 : aucun quai n'est disponible pour accueillir la navette.";
     
-     @Override
-    public void ajouterDestination(String[] infosCompte, String navette, String destination)
-                throws TokenInvalideException, NavetteInexistanteException,
-                       StationInexistanteException {
-        Station station;
-        
-        compteFacade.verificationAcces(infosCompte);
-        station = stationFacade.findByName(destination);
-        if (station == null) {
-            throw new StationInexistanteException(ERREUR_STATION_INEXISTANTE);
-        }
-        navetteFacade.verificationNavette(navette).setDestination(station);
-    }
+    private final String ERREUR_NAVETTES_INDISPONIBLE = "Erreur 14 : aucune navette n'est disponible pour le voyage demandé.";
     
     @Override
-    public void reserve(String[] infosCompte, String navette)
+    public void reserve(String[] infosCompte, String stationAttachement, String destination, 
+                        String dateArrivee, int nbPassagers)
                 throws TokenInvalideException, NavetteInexistanteException,
-                       ReservationExistanteException, AucuneDestinationException {
+                       AucuneDestinationException, QuaiIndisponibleException,
+                       StationInexistanteException, NavettesIndisponibleException,
+                       ParseException {
+        Quai quaiDestination;
         Compte compte;
         Navette navetteUtilise;
+        Station stationDestination;
+        Station stationActuelle;
+        Voyage voyage;
+        String operation;
+        Operation operationAjoute;
         
         compte = compteFacade.verificationAcces(infosCompte);
-        navetteUtilise = navetteFacade.verificationNavette(navette);
-        if (navetteUtilise.getDestination() == null) {
+        stationActuelle = stationFacade.findByName(stationAttachement);
+        if (stationActuelle == null) {
+            throw new StationInexistanteException(ERREUR_STATION_INEXISTANTE);
+        }
+        stationDestination = stationFacade.findByName(destination);
+        if (stationDestination == null) {
             throw new AucuneDestinationException(ERREUR_DESTINATION_INEXISTANTE);
         }
-        if (compte.getNavette() != null || navetteUtilise.compteExist(compte)) {
-            throw new ReservationExistanteException(ERREUR_DEJA_RESERVER);
+        navetteUtilise = stationFacade.findNavetteDisponible(stationActuelle);
+        if (navetteUtilise == null) {
+            throw new NavettesIndisponibleException(ERREUR_NAVETTES_INDISPONIBLE);
         }
-        navetteUtilise.addCompte(compte);
+        quaiDestination = stationFacade.findQuaiDisponible(stationDestination);
+        if (quaiDestination == null) {
+            throw new QuaiIndisponibleException(ERREUR_QUAI_INDISPONIBLE);
+        }
+        navetteUtilise.setCompte(compte);
         compte.setNavette(navetteUtilise);
-        operationFacade.ajouterOperation(navetteUtilise, VOYAGE_INITIE);
+        voyage = voyageFacade.creerVoyage(navetteUtilise, navetteUtilise.getQuai(), quaiDestination, dateArrivee, nbPassagers);
+        navetteFacade.ajouterVoyage(navetteUtilise, voyage);
+        quaiFacade.ajouterVoyage(navetteUtilise.getQuai(), quaiDestination, voyage);
+        operation = VOYAGE_INITIE + " Date de départ : " + new Date()
+                                  + " - Date d'arrivée prévue : " + dateArrivee
+                                  + " - ID de la station de départ : " + stationActuelle.getId()
+                                  + " - ID de la station d'arrivée : " + stationDestination.getId()
+                                  + " - ID de la navette : " +  navetteUtilise.getId()
+                                  + " - Nombre de passagers : " + nbPassagers
+                                  + " - Date de création de l'opération : " + new Date();
+        operationAjoute = operationFacade.ajouterOperation(navetteUtilise, operation);
+        navetteUtilise.ajouterOperation(operationAjoute);
+        compte.ajouterOperation(operationAjoute);
+        navetteFacade.edit(navetteUtilise);
+        compteFacade.edit(compte);
     }
 
     @Override
@@ -115,35 +152,47 @@ public class GestionNavette implements GestionNavetteLocal {
                 throws TokenInvalideException {
         Compte compte;
         Navette navetteUtilise;
+        List<Voyage> voyages;
+        Voyage voyage;
+        String operation;
+        Quai quaiDestination;
+        Quai quaiDepart;
+        Operation operationAjoute;
         
         compte = compteFacade.verificationAcces(infosCompte);
         navetteUtilise = compte.getNavette();
-        navetteUtilise.setDestination(null);
-        navetteUtilise.removeCompte(compte);
-        compte.setNavette(null);
-        operationFacade.ajouterOperation(navetteUtilise, VOYAGE_ACHEVE);
-    }
-
-    @Override
-    public List<String> recupererListeNavettes(String[] infosCompte)
-                        throws TokenInvalideException {
-        List<Navette> navettes;
-        List<String> nomsNavettes;
-        
-        compteFacade.verificationAcces(infosCompte);
-        navettes = navetteFacade.listNavettes();
-        nomsNavettes = new ArrayList<String>();
-        for (int i = 0 ; i < navettes.size() ; i++) {
-            nomsNavettes.add(navettes.get(i).getNom());
+        voyages = navetteUtilise.getVoyages();
+        voyage = voyageFacade.voyageAcheve(voyages.get((voyages.size() - 1)));
+        quaiDepart = voyage.getDepart();
+        quaiDestination = voyage.getDestination();
+        navetteUtilise.setQuai(quaiDestination);
+        quaiDestination.setNavette(navetteUtilise);
+        navetteUtilise.setCompte(null);
+        compte.setNavette(null); 
+        operation = VOYAGE_ACHEVE + " Date de départ : " + voyage.getDateDepart()
+                                  + " - Date d'arrivée : " + new Date()
+                                  + " - Identifiant de la station de départ : " + quaiDepart.getStation().getId()
+                                  + " - Identifiant de la station d'arrivée : " + quaiDestination.getStation().getId()
+                                  + " - Identifiant du quais de départ : " + quaiDepart.getId()
+                                  + " - Identifiant du quais d'arrivé : " + quaiDestination.getId()
+                                  + " - nombre de passagers : " + voyage.getNbPassagers()
+                                  + " - Emprunteur de la navette : " + compte.getIdentifiant()
+                                  + " - Date de création de l'opération : " + new Date();
+        operationAjoute = operationFacade.ajouterOperation(navetteUtilise, operation);
+        navetteUtilise.ajouterOperation(operationAjoute);
+        compte.ajouterOperation(operationAjoute);
+        if (navetteUtilise.getVoyages().size() % 3 == 0) {
+            navetteUtilise.setaReviser(true);
+            operation = REVISION_NECESSAIRE + " Identifiant de la station : " + quaiDestination.getStation().getId()
+                                            + " - Identifiant du quai : " + quaiDestination.getId()
+                                            + " - Date de création de l'opération : " + new Date();
+            operationAjoute = operationFacade.ajouterOperation(navetteUtilise, operation);
+            navetteUtilise.ajouterOperation(operationAjoute);
+            compte.ajouterOperation(operationAjoute);
         }
-        return nomsNavettes;
-    }
-
-    @Override
-    public String recupererInformationDestination(String[] infosCompte, String navette)
-                  throws TokenInvalideException, NavetteInexistanteException {
-        compteFacade.verificationAcces(infosCompte);
-        return navetteFacade.verificationNavette(navette).getDestination().getNom();
+        navetteFacade.edit(navetteUtilise);
+        quaiFacade.edit(quaiDepart);
+        compteFacade.edit(compte);
     }
 
     @Override
@@ -151,18 +200,35 @@ public class GestionNavette implements GestionNavetteLocal {
                 throws TokenInvalideException, NavetteInexistanteException,
                        NavettePasAReviserException, RoleInvalideException {
         Navette navetteAReviser;
+        Compte compte;
         List<String> rolesAutorises;
+        Quai quaiNavetteAReviser;
+        Revision revision;
+        String operation;
+        Operation operationAjoute;
         
         rolesAutorises = new ArrayList<String>();
         rolesAutorises.add("Mécanicien");
         rolesAutorises.add("Administrateur");
-        compteFacade.verificationAcces(infosCompte, rolesAutorises);
+        compte = compteFacade.verificationAcces(infosCompte, rolesAutorises);
         navetteAReviser = navetteFacade.verificationNavette(navette);
         if (!navetteAReviser.isaReviser()) {
             throw new NavettePasAReviserException(ERREUR_NAVETTE_PAS_A_REVISER);
         }
-        navetteAReviser.setRevisionEnCours(true);
-        operationFacade.ajouterOperation(navetteAReviser, DEBUT_REVISION);
+        revision = revisionFacade.creationRevision(navetteAReviser, compte);
+        quaiNavetteAReviser = navetteAReviser.getQuai();
+        quaiNavetteAReviser.ajouterRevision(revision);
+        navetteAReviser.ajouterRevision(revision);
+        compte.ajouterRevision(revision);
+        operation = DEBUT_REVISION + " Identifiant de la station : " + quaiNavetteAReviser.getStation().getId()
+                                   + " - Identifiant du quai : " + quaiNavetteAReviser.getId()
+                                   + " - Mécanicien en charge : " + compte.getIdentifiant()
+                                   + " - Date de création de l'opération : " + new Date();
+        operationAjoute = operationFacade.ajouterOperation(navetteAReviser, operation);
+        navetteAReviser.ajouterOperation(operationAjoute);
+        compteFacade.edit(compte);
+        quaiFacade.edit(quaiNavetteAReviser);
+        navetteFacade.edit(navetteAReviser);
     }
 
     @Override
@@ -171,17 +237,30 @@ public class GestionNavette implements GestionNavetteLocal {
                        RevisionInexistanteException, RoleInvalideException {
         Navette navetteAReviser;
         List<String> rolesAutorises;
+        Revision revision;
+        String operation;
+        Operation operationAjoute;
+        Compte compte;
         
         rolesAutorises = new ArrayList<String>();
         rolesAutorises.add("Mécanicien");
         rolesAutorises.add("Administrateur");
-        compteFacade.verificationAcces(infosCompte, rolesAutorises);
+        compte = compteFacade.verificationAcces(infosCompte, rolesAutorises);
         navetteAReviser = navetteFacade.verificationNavette(navette);
-        if (!navetteAReviser.isRevisionEnCours()) {
+        revision = navetteAReviser.getRevisions().get((navetteAReviser.getRevisions().size() - 1));
+        if (revision == null || !revision.isEnCours()) {
             throw new RevisionInexistanteException(ERREUR_REVISION_INEXISTANTE);
         }
-        navetteAReviser.setRevisionEnCours(false);
-        operationFacade.ajouterOperation(navetteAReviser, FIN_REVISION);
+        revision.setEnCours(false);
+        navetteAReviser.setaReviser(false);
+        operation = FIN_REVISION + " ID de la station : " + revision.getQuai().getStation().getId()
+                                 + " - ID du quai : " + revision.getQuai().getId()
+                                 + " - Mécanicien en charge : " + compte.getIdentifiant()
+                                 + " - Date de création de l'opération : " + new Date();
+        operationAjoute = operationFacade.ajouterOperation(navetteAReviser, operation);
+        navetteAReviser.ajouterOperation(operationAjoute);
+        revisionFacade.edit(revision);
+        navetteFacade.edit(navetteAReviser);
     }
 
     @Override

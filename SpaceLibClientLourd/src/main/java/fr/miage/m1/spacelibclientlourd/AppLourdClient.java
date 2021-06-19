@@ -131,12 +131,6 @@ public class AppLourdClient {
     public void reserverVoyage() {
         ListeChoix liste;
         
-        try {
-            liste = new ListeChoix(navetteRMIService.getServiceNavetteRemote().recupererListeNavettes(infosCompte()));
-        } catch (TokenInvalideException ex) {
-            Logger.getLogger(AppLourdClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
     }
     
     public String[] infosCompte() {
