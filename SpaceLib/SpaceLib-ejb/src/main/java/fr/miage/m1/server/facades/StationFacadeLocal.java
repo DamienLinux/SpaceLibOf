@@ -34,7 +34,7 @@ public interface StationFacadeLocal {
     
     public Station findByName(String nom);
     
-    public Station creerStation(String nom);
+    public Station creerStation(String nom, String localisation);
     
     public Navette findNavetteDisponible(Station station);
     

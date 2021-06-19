@@ -38,8 +38,12 @@ public class GestionStation implements GestionStationLocal {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     
-     @Override
-    public void ajouterStation(String[] infosCompte, String nom, int nbQuais)
+    public List<Station> listeStations() {
+        return stationFacade.findAll();
+    }
+    
+    @Override
+    public void ajouterStation(String[] infosCompte, String nom, String localisation, int nbQuais)
                 throws TokenInvalideException, StationExistanteException,
                        RoleInvalideException {
         Station station;
@@ -52,7 +56,7 @@ public class GestionStation implements GestionStationLocal {
         if (station != null) {
             throw new StationExistanteException(ERREUR_STATION_EXISTANTE);
         }
-        station = stationFacade.creerStation(nom);
+        station = stationFacade.creerStation(nom, localisation);
         stationFacade.edit(quaiFacade.creerQuais(station, nbQuais));
     }
 }

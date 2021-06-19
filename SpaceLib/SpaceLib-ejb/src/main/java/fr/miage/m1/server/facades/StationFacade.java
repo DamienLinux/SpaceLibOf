@@ -36,6 +36,10 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
         super(Station.class);
     }
     
+   /* public List<Station> findAllStations() {
+        super()
+    }*/
+    
     @Override
     public Station findByName(String nom) {
         List<Station> stations;
@@ -52,8 +56,8 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
     }
 
     @Override
-    public Station creerStation(String nom) {
-        Station station = new Station(nom);
+    public Station creerStation(String nom, String localisation) {
+        Station station = new Station(nom, localisation);
         create(station);
         return station;
     }

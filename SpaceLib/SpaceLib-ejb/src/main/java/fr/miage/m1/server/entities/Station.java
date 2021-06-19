@@ -38,6 +38,9 @@ public class Station implements Serializable {
     }
     
     @NotNull
+    private String localisation;
+    
+    @NotNull
     private String nom;
     @OneToMany(mappedBy = "stationRattachement")
     private List<Compte> comptes;
@@ -45,8 +48,13 @@ public class Station implements Serializable {
     public Station() {
     }
 
-    public Station(String nom) {
+    public Station(String nom, String localisation) {
         this.nom = nom;
+        this.localisation = localisation;
+    }
+    
+    public String getLocalisation() {
+        return localisation;
     }
     
     public Long getId() {
