@@ -26,9 +26,9 @@ public class ServicesStation implements ServicesStationLocal {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public void ajouterStation(String[] infosCompte, String nom, int nbQuais) 
+    public void ajouterStation(String[] infosCompte, String nom, String localisation, int nbQuais) 
                 throws TokenInvalideException, StationExistanteException,
                        RoleInvalideException{
-        gestionStation.ajouterStation(infosCompte, nom, nbQuais);
+        gestionStation.ajouterStation(infosCompte, nom, localisation, nbQuais);
     }
 }

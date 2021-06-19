@@ -27,7 +27,7 @@ public class StationWebServices {
 
     @WebMethod(operationName = "ajouterStation")
     public void ajouterStation(@WebParam(name = "identifiant") String identifiant, @WebParam(name = "token") String token, @WebParam(name = "nom") String nom, 
-                               @WebParam(name = "nbQuais") int nbQuais) 
+            @WebParam(name = "localisation") String localisation, @WebParam(name = "nbQuais") int nbQuais) 
                 throws TokenInvalideException, StationExistanteException,
                        RoleInvalideException {
         String[] infosCompte;
@@ -35,7 +35,7 @@ public class StationWebServices {
         infosCompte = new String[2];
         infosCompte[0] = identifiant;
         infosCompte[1] = token;
-        ejbRef.ajouterStation(infosCompte, nom, nbQuais);
+        ejbRef.ajouterStation(infosCompte, nom, localisation, nbQuais);
     }
     
 }
