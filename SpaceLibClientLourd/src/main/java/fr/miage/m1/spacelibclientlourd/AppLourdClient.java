@@ -36,7 +36,8 @@ public class AppLourdClient {
                                                 + " 2 - Se connecter\n"
                                                 + " 3 - Réserver un voyage\n"
                                                 + " 4 - Indiquer son arrivé\n"
-                                                + " 5 - Quitter\n"
+                                                + " 5 - Visualiser la carte\n"
+                                                + " 6 - Quitter\n"
                                                 + "#------------------------------------------------\n"
                                                 + "Quelle option choisissez-vous ? : ";
     
@@ -53,6 +54,8 @@ public class AppLourdClient {
     private RMICompteServiceManager compteRMIService;
     
     private RMINavetteServiceManager navetteRMIService;
+    
+    private RMIStationServiceManager stationRMIService;
     
     private String identifiant;
     
@@ -157,6 +160,16 @@ public class AppLourdClient {
         }
     }
     
+    public void visualiserCarte() {
+        
+        try {
+            System.out.println(stationRMIService.getServiceStationRemote().listeStations());
+        } catch (TokenInvalideException ex) {
+            System.out.println(ERREUR_ACCES_NON_AUTORISE);
+        }
+        
+    }
+    
     public void menu() {
         int choix;
         boolean executionEnCours;
@@ -189,6 +202,10 @@ public class AppLourdClient {
                 case 4:
                     System.out.println("Indiquer son arrivé");
                     indiquerArrivee();
+                    break;
+                case 5:
+                    System.out.println("Accès à la carte");
+                    //indiquerArrivee();
                     break;
                 default:
                     executionEnCours = false;

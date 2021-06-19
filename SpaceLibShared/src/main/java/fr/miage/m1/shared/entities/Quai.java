@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author DamienAvetta-Raymond
  */
-public class Station implements Serializable {
+public class Quai implements Serializable {
     private Long id;
 
     private String nom;
@@ -50,12 +50,12 @@ public class Station implements Serializable {
         this.navettes = navettes;
     }
 
-    public Station(Long id, String nom, List<Navette> navettes) {
+    public Quai(Long id, String nom, List<Navette> navettes) {
         this.id = id;
         this.nom = nom;
         this.navettes = navettes;
     }
 
-    public Station() {
+    public Quai() {
     }
 }
