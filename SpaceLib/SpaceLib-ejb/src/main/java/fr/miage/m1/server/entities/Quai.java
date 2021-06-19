@@ -22,7 +22,7 @@ import javax.persistence.OneToOne;
 @Entity
 public class Quai implements Serializable {
 
-    @OneToMany(mappedBy = "voyagesADestination")
+    
     private List<Voyage> voyagesADestination;
     
     @OneToMany(mappedBy = "depart")

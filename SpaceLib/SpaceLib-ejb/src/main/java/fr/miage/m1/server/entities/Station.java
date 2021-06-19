@@ -28,14 +28,6 @@ public class Station implements Serializable {
     
     @OneToMany(mappedBy = "station")
     private List<Quai> quais;
-
-    public List<Quai> getQuais() {
-        return quais;
-    }
-
-    public void setQuais(List<Quai> quais) {
-        this.quais = quais;
-    }
     
     @NotNull
     private String localisation;
@@ -51,6 +43,14 @@ public class Station implements Serializable {
     public Station(String nom, String localisation) {
         this.nom = nom;
         this.localisation = localisation;
+    }
+    
+    public List<Quai> getQuais() {
+        return quais;
+    }
+
+    public void setQuais(List<Quai> quais) {
+        this.quais = quais;
     }
     
     public String getLocalisation() {

@@ -33,6 +33,47 @@ public class Navette implements Serializable {
     
     private boolean aReviser;
 
+    @NotNull
+    int nbPassagersMaximum;
+    @OneToMany(mappedBy = "navette")
+    private List<Revision> revisions;
+    @OneToMany(mappedBy = "navette")
+    private List<Voyage> voyages;
+
+    @OneToOne
+    private Compte compte;
+
+    @OneToMany(mappedBy = "navette")
+    private List<Operation> operations;
+
+    @OneToOne
+    private Quai quai;
+
+    public Navette() {
+    }
+    
+    public Navette(String nom, int nbPassagersMaximum, Quai quai) {
+        this.nom = nom;
+        this.nbPassagersMaximum = nbPassagersMaximum;
+        this.quai = quai;
+    }
+    
+    public int getNbPassagersMaximum() {
+        return nbPassagersMaximum;
+    }
+
+    public void setNbPassagersMaximum(int nbPassagersMaximum) {
+        this.nbPassagersMaximum = nbPassagersMaximum;
+    }
+    
+    public Compte getCompte() {
+        return compte;
+    }
+
+    public void setCompte(Compte compte) {
+        this.compte = compte;
+    }
+    
     public List<Revision> getRevisions() {
         return revisions;
     }
@@ -54,49 +95,6 @@ public class Navette implements Serializable {
     }
 
     public void setQuai(Quai quai) {
-        this.quai = quai;
-    }
-    
-    @NotNull
-    int nbPassagersMaximum;
-    @OneToMany(mappedBy = "navette")
-    private List<Revision> revisions;
-    @OneToMany(mappedBy = "navette")
-    private List<Voyage> voyages;
-
-    public int getNbPassagersMaximum() {
-        return nbPassagersMaximum;
-    }
-
-    public void setNbPassagersMaximum(int nbPassagersMaximum) {
-        this.nbPassagersMaximum = nbPassagersMaximum;
-    }
-    
-    
-    @OneToOne
-    private Compte compte;
-
-    public Compte getCompte() {
-        return compte;
-    }
-
-    public void setCompte(Compte compte) {
-        this.compte = compte;
-    }
-    
-    @OneToMany(mappedBy = "navette")
-    private List<Operation> operations;
-    
-    
-    @OneToOne
-    private Quai quai;
-
-    public Navette() {
-    }
-    
-    public Navette(String nom, int nbPassagersMaximum, Quai quai) {
-        this.nom = nom;
-        this.nbPassagersMaximum = nbPassagersMaximum;
         this.quai = quai;
     }
 

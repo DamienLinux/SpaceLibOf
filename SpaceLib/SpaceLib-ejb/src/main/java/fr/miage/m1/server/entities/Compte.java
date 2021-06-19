@@ -46,6 +46,52 @@ public class Compte implements Serializable {
         return revisions;
     }
 
+    @OneToMany(mappedBy = "compte")
+    private List<Operation> operations;
+
+    @ManyToOne
+    public Station stationRattachement;
+
+    @OneToOne(mappedBy = "compte")
+    public Navette navette;
+    
+    public Compte() {
+    }
+
+    public Compte(String identifiant, String motDePasse, String role) {
+        this.identifiant = identifiant;
+        this.motDePasse = motDePasse;
+        this.role = role;
+    }
+    
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+    
+    public Station getStationRattachement() {
+        return stationRattachement;
+    }
+
+    public void setStationRattachement(Station stationRattachement) {
+        this.stationRattachement = stationRattachement;
+    }
+    
+     public String getToken() {
+        return token;
+    }
+    
+    public Navette getNavette() {
+        return navette;
+    }
+
+    public void setNavette(Navette navette) {
+        this.navette = navette;
+    }
+    
     public void setRevisions(List<Revision> revisions) {
         this.revisions = revisions;
     }
@@ -60,53 +106,6 @@ public class Compte implements Serializable {
     
     public void ajouterOperation(Operation operation) {
         operations.add(operation);
-    }
-    
-    @OneToMany(mappedBy = "compte")
-    private List<Operation> operations;
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-    
-    @ManyToOne
-    public Station stationRattachement;
-
-    public Station getStationRattachement() {
-        return stationRattachement;
-    }
-
-    public void setStationRattachement(Station stationRattachement) {
-        this.stationRattachement = stationRattachement;
-    }
-
-    public Compte() {
-    }
-
-    public String getToken() {
-        return token;
-    }
-    
-    
-    @OneToOne(mappedBy = "compte")
-    public Navette navette;
-
-    public Navette getNavette() {
-        return navette;
-    }
-
-    public void setNavette(Navette navette) {
-        this.navette = navette;
-    }
-    
-    public Compte(String identifiant, String motDePasse, String role) {
-        this.identifiant = identifiant;
-        this.motDePasse = motDePasse;
-        this.role = role;
     }
     
     public Long getId() {

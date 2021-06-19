@@ -28,24 +28,6 @@ public class Operation implements Serializable {
     @NotNull
     private String operation;
 
-    public Navette getNavette() {
-        return navette;
-    }
-
-    public void setNavette(Navette navette) {
-        this.navette = navette;
-    }
-
-    public Compte getCompte() {
-        return compte;
-    }
-
-    public void setCompte(Compte compte) {
-        this.compte = compte;
-    }
-    
-    
-    
     @ManyToOne
     private Navette navette;
     @ManyToOne
@@ -61,6 +43,22 @@ public class Operation implements Serializable {
     public Operation(String operation, Navette navette) {
         this.operation = operation;
         this.navette = navette;
+    }
+    
+    public Navette getNavette() {
+        return navette;
+    }
+
+    public void setNavette(Navette navette) {
+        this.navette = navette;
+    }
+
+    public Compte getCompte() {
+        return compte;
+    }
+
+    public void setCompte(Compte compte) {
+        this.compte = compte;
     }
     
     public Long getId() {

@@ -30,6 +30,11 @@ public class Revision implements Serializable {
     @ManyToOne
     private Quai quai;
     
+    @ManyToOne
+    private Navette navette;
+    
+    private boolean enCours;
+    
     public Revision() {
     }
     
@@ -47,8 +52,6 @@ public class Revision implements Serializable {
         this.quai = quai;
     }
     
-    private boolean enCours;
-
     public boolean isEnCours() {
         return enCours;
     }
@@ -57,9 +60,6 @@ public class Revision implements Serializable {
         this.enCours = enCours;
     }
     
-    @ManyToOne
-    private Navette navette;
-
     public Compte getMecanicienEnCharge() {
         return mecanicienEnCharge;
     }

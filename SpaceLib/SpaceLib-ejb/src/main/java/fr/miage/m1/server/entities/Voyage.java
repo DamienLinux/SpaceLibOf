@@ -29,6 +29,31 @@ public class Voyage implements Serializable {
     
     public int nbPassagers;
 
+    public Date dateArriveePrevue;
+
+    @ManyToOne
+    private Quai depart;
+    
+    
+    @ManyToOne
+    private Quai destination;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
+    public Voyage() {
+    }
+    
+    public Voyage(Navette navette, Quai depart, Quai destination, Date dateArriveePrevue, int nbPassagers) {
+        this.navette = navette;
+        this.depart = depart;
+        this.destination = destination;
+        this.dateArriveePrevue = dateArriveePrevue;
+        this.nbPassagers = nbPassagers;
+    }
+    
     public int getNbPassagers() {
         return nbPassagers;
     }
@@ -52,8 +77,6 @@ public class Voyage implements Serializable {
     public void setDateArriveePrevue(Date dateArriveePrevue) {
         this.dateArriveePrevue = dateArriveePrevue;
     }
-    
-    public Date dateArriveePrevue;
 
     public boolean isEnCours() {
         return enCours;
@@ -78,9 +101,6 @@ public class Voyage implements Serializable {
     public void setDestination(Quai destination) {
         this.destination = destination;
     }
-    
-    @ManyToOne
-    private Quai depart;
 
     public Quai getDepart() {
         return depart;
@@ -89,25 +109,6 @@ public class Voyage implements Serializable {
     public void setDepart(Quai depart) {
         this.depart = depart;
     }
-    
-    @ManyToOne
-    private Quai destination;
-
-    public Voyage() {
-    }
-    
-    public Voyage(Navette navette, Quai depart, Quai destination, Date dateArriveePrevue, int nbPassagers) {
-        this.navette = navette;
-        this.depart = depart;
-        this.destination = destination;
-        this.dateArriveePrevue = dateArriveePrevue;
-        this.nbPassagers = nbPassagers;
-    }
-
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     public Long getId() {
         return id;
