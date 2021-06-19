@@ -115,7 +115,8 @@ public class Compte implements Serializable {
     public String creerToken() {
         final String KEY = "SPACEX";
         
-        return KEY + UUID.randomUUID().toString().toUpperCase();
+        token = KEY + UUID.randomUUID().toString().toUpperCase();
+        return token;
     }
 
     @Override

@@ -12,7 +12,6 @@ import fr.miage.m1.server.facades.StationFacadeLocal;
 import fr.miage.m1.shared.exceptions.CompteInexistantException;
 import fr.miage.m1.shared.exceptions.IdentifiantExistantException;
 import fr.miage.m1.shared.exceptions.MotDePasseInvalideException;
-import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
 import javax.ejb.EJB;

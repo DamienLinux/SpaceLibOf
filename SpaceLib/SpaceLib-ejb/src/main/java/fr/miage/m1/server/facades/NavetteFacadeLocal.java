@@ -6,6 +6,7 @@
 package fr.miage.m1.server.facades;
 
 import fr.miage.m1.server.entities.Navette;
+import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import java.util.List;
@@ -45,6 +46,6 @@ public interface NavetteFacadeLocal {
     public Navette verificationNavette(String navette)
                    throws NavetteInexistanteException;
     
-    public void ajouterNavette(String navette);
+    public Navette ajouterNavette(String navette, int nbPassagers, Quai quai);
     
 }

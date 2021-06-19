@@ -5,6 +5,7 @@
  */
 package fr.miage.m1.server.facades;
 
+import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
 import java.util.List;
 import javax.ejb.Local;
@@ -14,24 +15,23 @@ import javax.ejb.Local;
  * @author DamienAvetta-Raymond
  */
 @Local
-public interface StationFacadeLocal {
+public interface QuaiFacadeLocal {
 
-    void create(Station station);
+    void create(Quai quai);
 
-    void edit(Station station);
+    void edit(Quai quai);
 
-    void remove(Station station);
+    void remove(Quai quai);
 
-    Station find(Object id);
+    Quai find(Object id);
 
-    List<Station> findAll();
+    List<Quai> findAll();
 
-    List<Station> findRange(int[] range);
+    List<Quai> findRange(int[] range);
 
     int count();
     
-    public Station findByName(String nom);
+    public Station creerQuais(Station station, int nbQuais);
     
-    public Station creerStation(String nom);
-    
+    public Quai attributionQuai(Station station);
 }

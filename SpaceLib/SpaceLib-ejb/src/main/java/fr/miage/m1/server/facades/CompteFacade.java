@@ -49,7 +49,7 @@ public class CompteFacade extends AbstractFacade<Compte> implements CompteFacade
         Root<Compte> root = query.from(Compte.class);
         query.where(build.equal(root.get("identifiant"), identifiant));
         comptes = getEntityManager().createQuery(query).getResultList();
-        if (comptes.size() > 0) {
+        if (comptes != null || comptes.size() > 0) {
             return comptes.get(0);
         } //else
         return null;
@@ -66,7 +66,10 @@ public class CompteFacade extends AbstractFacade<Compte> implements CompteFacade
 
     @Override
     public String creerToken(Compte compte) {
-        return compte.creerToken();
+        String token;
+        token = compte.creerToken();
+        edit(compte);
+        return token;
     }
 
     @Override
@@ -86,7 +89,7 @@ public class CompteFacade extends AbstractFacade<Compte> implements CompteFacade
         Compte compte;
         
         compte = findCompteByIdentifiant(infosCompte[0]);
-        if (!compte.getToken().equals(infosCompte[1])) {
+        if (compte == null || !compte.getToken().equals((infosCompte[1]))) {
             throw new TokenInvalideException(ERREUR_TOKEN_INVALIDE);
         }
         if (rolesAutorises != null && !rolesAutorises.contains(compte.getRole())) {

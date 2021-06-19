@@ -7,15 +7,18 @@ package fr.miage.m1.server.metier;
 
 import fr.miage.m1.server.entities.Compte;
 import fr.miage.m1.server.entities.Navette;
+import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
 import fr.miage.m1.server.facades.CompteFacadeLocal;
 import fr.miage.m1.server.facades.NavetteFacadeLocal;
 import fr.miage.m1.server.facades.OperationFacadeLocal;
+import fr.miage.m1.server.facades.QuaiFacadeLocal;
 import fr.miage.m1.server.facades.StationFacadeLocal;
 import fr.miage.m1.shared.exceptions.AucuneDestinationException;
 import fr.miage.m1.shared.exceptions.NavetteExistanteException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePasAReviserException;
+import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.ReservationExistanteException;
 import fr.miage.m1.shared.exceptions.RevisionInexistanteException;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
@@ -32,6 +35,9 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class GestionNavette implements GestionNavetteLocal {
+
+    @EJB
+    private QuaiFacadeLocal quaiFacade;
 
     @EJB
     private CompteFacadeLocal compteFacade;
@@ -67,6 +73,8 @@ public class GestionNavette implements GestionNavetteLocal {
     private final String ERREUR_STATION_INEXISTANTE = "Erreur 10 : Station inexistante";
     
     private final String ERREUR_NAVETTE_EXISTANTE = "Erreur 12 : La navette existe déjà.";
+    
+    private final String ERREUR_QUAI_INDISPONIBLE = "Erreur 13 : aucun quai n'est disponible pour accueillir la navette.";
     
      @Override
     public void ajouterDestination(String[] infosCompte, String navette, String destination)
@@ -147,6 +155,7 @@ public class GestionNavette implements GestionNavetteLocal {
         
         rolesAutorises = new ArrayList<String>();
         rolesAutorises.add("Mécanicien");
+        rolesAutorises.add("Administrateur");
         compteFacade.verificationAcces(infosCompte, rolesAutorises);
         navetteAReviser = navetteFacade.verificationNavette(navette);
         if (!navetteAReviser.isaReviser()) {
@@ -165,6 +174,7 @@ public class GestionNavette implements GestionNavetteLocal {
         
         rolesAutorises = new ArrayList<String>();
         rolesAutorises.add("Mécanicien");
+        rolesAutorises.add("Administrateur");
         compteFacade.verificationAcces(infosCompte, rolesAutorises);
         navetteAReviser = navetteFacade.verificationNavette(navette);
         if (!navetteAReviser.isRevisionEnCours()) {
@@ -183,6 +193,7 @@ public class GestionNavette implements GestionNavetteLocal {
         
         rolesAutorises = new ArrayList<String>();
         rolesAutorises.add("Mécanicien");
+        rolesAutorises.add("Administrateur");
         
         compteFacade.verificationAcces(infosCompte, rolesAutorises);
         navettes = navetteFacade.listNavettesAReviser();
@@ -194,10 +205,14 @@ public class GestionNavette implements GestionNavetteLocal {
     }
 
     @Override
-    public void ajouterNavette(String[] infosCompte, String navette) 
+    public void ajouterNavette(String[] infosCompte, String navette, int nbPassagers, String station)
                 throws TokenInvalideException, RoleInvalideException, 
-                       NavetteExistanteException {
+                       NavetteExistanteException, QuaiIndisponibleException,
+                       StationInexistanteException {
         List<String> rolesAutorises;
+        Station stationRecherche;
+        Quai quai;
+        Navette navetteAjoutee;
         
         rolesAutorises = new ArrayList<String>();
         rolesAutorises.add("Administrateur");
@@ -206,6 +221,16 @@ public class GestionNavette implements GestionNavetteLocal {
         if (navetteFacade.findByName(navette) != null) {
             throw new NavetteExistanteException(ERREUR_NAVETTE_EXISTANTE);
         }
-        navetteFacade.ajouterNavette(navette);
+        stationRecherche = stationFacade.findByName(station);
+        if (stationRecherche == null) {
+            throw new StationInexistanteException(ERREUR_STATION_INEXISTANTE);
+        }
+        if (stationRecherche.quaisDisponibles() <= 0) {
+            throw new QuaiIndisponibleException(ERREUR_QUAI_INDISPONIBLE);
+        }
+        quai = quaiFacade.attributionQuai(stationRecherche);
+        navetteAjoutee = navetteFacade.ajouterNavette(navette, nbPassagers, quai);
+        quai.setNavette(navetteAjoutee);
+        quaiFacade.edit(quai);
     }
 }

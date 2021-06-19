@@ -9,8 +9,10 @@ import fr.miage.m1.server.metier.GestionNavetteLocal;
 import fr.miage.m1.shared.exceptions.NavetteExistanteException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePasAReviserException;
+import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.RevisionInexistanteException;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
+import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
 import java.util.List;
 import javax.ejb.EJB;
@@ -49,7 +51,10 @@ public class ServicesNavette implements ServicesNavetteLocal {
     }
 
     @Override
-    public void ajouterNavette(String[] infosCompte, String navette) throws TokenInvalideException, RoleInvalideException, NavetteExistanteException {
-        gestionNavette.ajouterNavette(infosCompte, navette);
+    public void ajouterNavette(String[] infosCompte, String navette, int nbPassagers, String station)
+                throws TokenInvalideException, RoleInvalideException, 
+                       NavetteExistanteException, QuaiIndisponibleException,
+                       StationInexistanteException {
+        gestionNavette.ajouterNavette(infosCompte, navette, nbPassagers, station);
     }
 }

@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -37,6 +38,17 @@ public class Navette implements Serializable {
     @ManyToOne
     private Station destination;
     
+    @NotNull
+    int nbPassagersMaximum;
+
+    public int getNbPassagersMaximum() {
+        return nbPassagersMaximum;
+    }
+
+    public void setNbPassagersMaximum(int nbPassagersMaximum) {
+        this.nbPassagersMaximum = nbPassagersMaximum;
+    }
+    
     
     @OneToMany(mappedBy = "navette")
     private List<Compte> comptes;
@@ -44,8 +56,17 @@ public class Navette implements Serializable {
     @OneToMany(mappedBy = "navette")
     private List<Operation> operations;
     
-    public Navette(String nom) {
+    
+    @OneToOne
+    private Quai quai;
+
+    public Navette() {
+    }
+    
+    public Navette(String nom, int nbPassagersMaximum, Quai quai) {
         this.nom = nom;
+        this.nbPassagersMaximum = nbPassagersMaximum;
+        this.quai = quai;
     }
 
     public List<Compte> getComptes() {
@@ -110,10 +131,6 @@ public class Navette implements Serializable {
 
     public List<Operation> getOperations() {
         return operations;
-    }
-    
-    public int getNbPassagers() {
-        return comptes.size();
     }
 
     @Override

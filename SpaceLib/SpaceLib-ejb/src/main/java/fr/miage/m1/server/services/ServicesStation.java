@@ -9,6 +9,7 @@ import fr.miage.m1.server.metier.GestionStationLocal;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationExistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -25,9 +26,9 @@ public class ServicesStation implements ServicesStationLocal {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public void ajouterStation(String[] infosCompte, String nom) 
+    public void ajouterStation(String[] infosCompte, String nom, int nbQuais) 
                 throws TokenInvalideException, StationExistanteException,
                        RoleInvalideException{
-        gestionStation.ajouterStation(infosCompte, nom);
+        gestionStation.ajouterStation(infosCompte, nom, nbQuais);
     }
 }

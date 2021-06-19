@@ -16,7 +16,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface GestionStationLocal {
-     public void ajouterStation(String[] infosComptes, String nom)
+     public void ajouterStation(String[] infosComptes, String nom, int nbQuais)
                 throws TokenInvalideException, StationExistanteException,
                        RoleInvalideException;
 }

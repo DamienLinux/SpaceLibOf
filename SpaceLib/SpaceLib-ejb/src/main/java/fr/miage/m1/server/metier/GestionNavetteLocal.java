@@ -9,6 +9,7 @@ import fr.miage.m1.shared.exceptions.AucuneDestinationException;
 import fr.miage.m1.shared.exceptions.NavetteExistanteException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePasAReviserException;
+import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.ReservationExistanteException;
 import fr.miage.m1.shared.exceptions.RevisionInexistanteException;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
@@ -51,7 +52,8 @@ public interface GestionNavetteLocal {
     public List<String> recupererInformationsRevisions(String[] infosCompte)
                         throws TokenInvalideException, RoleInvalideException;
     
-    public void ajouterNavette(String[] infosCompte, String navette)
-                throws TokenInvalideException, RoleInvalideException,
-                       NavetteExistanteException;
+    public void ajouterNavette(String[] infosCompte, String navette, int nbPassagers, String station)
+                throws TokenInvalideException, RoleInvalideException, 
+                       NavetteExistanteException, QuaiIndisponibleException,
+                       StationInexistanteException;
 }

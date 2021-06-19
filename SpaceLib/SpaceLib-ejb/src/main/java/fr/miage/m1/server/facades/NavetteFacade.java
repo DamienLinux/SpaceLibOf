@@ -6,6 +6,7 @@
 package fr.miage.m1.server.facades;
 
 import fr.miage.m1.server.entities.Navette;
+import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import java.util.List;
@@ -50,7 +51,7 @@ public class NavetteFacade extends AbstractFacade<Navette> implements NavetteFac
         Root<Navette> root = query.from(Navette.class);
         query.where(build.equal(root.get("nom"), nom));
         navettes = getEntityManager().createQuery(query).getResultList();
-        if (navettes.size() > 0) {
+        if (navettes != null && navettes.size() > 0) {
             return navettes.get(0);
         } //else
         return null;
@@ -98,9 +99,10 @@ public class NavetteFacade extends AbstractFacade<Navette> implements NavetteFac
     }
 
     @Override
-    public void ajouterNavette(String navette) {
-        Navette navetteAAjouter = new Navette(navette);
+    public Navette ajouterNavette(String navette, int nbPassagers, Quai quai) {
+        Navette navetteAAjouter = new Navette(navette, nbPassagers, quai);
         create(navetteAAjouter);
+        return navetteAAjouter;
     }
     
 }

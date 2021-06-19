@@ -7,6 +7,7 @@ package fr.miage.m1.server.metier;
 
 import fr.miage.m1.server.entities.Station;
 import fr.miage.m1.server.facades.CompteFacadeLocal;
+import fr.miage.m1.server.facades.QuaiFacadeLocal;
 import fr.miage.m1.server.facades.StationFacadeLocal;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationExistanteException;
@@ -24,6 +25,9 @@ import javax.ejb.Stateless;
 public class GestionStation implements GestionStationLocal {
 
     @EJB
+    private QuaiFacadeLocal quaiFacade;
+
+    @EJB
     private StationFacadeLocal stationFacade;
 
     @EJB
@@ -35,7 +39,7 @@ public class GestionStation implements GestionStationLocal {
     // "Insert Code > Add Business Method")
     
      @Override
-    public void ajouterStation(String[] infosCompte, String nom)
+    public void ajouterStation(String[] infosCompte, String nom, int nbQuais)
                 throws TokenInvalideException, StationExistanteException,
                        RoleInvalideException {
         Station station;
@@ -48,6 +52,7 @@ public class GestionStation implements GestionStationLocal {
         if (station != null) {
             throw new StationExistanteException(ERREUR_STATION_EXISTANTE);
         }
-        stationFacade.creerStation(nom);
+        station = stationFacade.creerStation(nom);
+        stationFacade.edit(quaiFacade.creerQuais(station, nbQuais));
     }
 }

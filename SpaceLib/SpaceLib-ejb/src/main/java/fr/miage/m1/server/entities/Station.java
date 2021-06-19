@@ -30,6 +30,17 @@ public class Station implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
+    @OneToMany(mappedBy = "station")
+    private List<Quai> quais;
+
+    public List<Quai> getQuais() {
+        return quais;
+    }
+
+    public void setQuais(List<Quai> quais) {
+        this.quais = quais;
+    }
+    
     @NotNull
     private String nom;
     @OneToMany(mappedBy = "stationRattachement")
@@ -95,4 +106,16 @@ public class Station implements Serializable {
         comptes.remove(compte);
     }
     
+    public int quaisDisponibles() {
+        int nbQuaisDisponibles;
+        
+        nbQuaisDisponibles = 0;
+        for (int i = 0 ; i < quais.size() ; i++) {
+            if (quais.get(i).getNavette() == null) {
+                nbQuaisDisponibles++;
+            }
+        }
+        /* On supprime les navettes qui sont à destination de la station */
+        return (nbQuaisDisponibles - navettes.size());
+    }
 }

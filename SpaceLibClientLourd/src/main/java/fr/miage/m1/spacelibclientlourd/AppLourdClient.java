@@ -12,6 +12,7 @@ import fr.miage.m1.shared.exceptions.MotDePasseInvalideException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
@@ -93,9 +94,9 @@ public class AppLourdClient {
         boolean valide;
         
         console = new ConsoleAuthentifier(service);
-        station = console.renseignerStation();
         do {
             valide = true;
+            station = console.renseignerStation();
             try {
                 compteRMIService.getServiceCompteRemote().renseignerStationRattachement(infosCompte(), station);
             } catch (TokenInvalideException ex) {
@@ -128,7 +129,14 @@ public class AppLourdClient {
     }
     
     public void reserverVoyage() {
-        /* TODO reserver */
+        ListeChoix liste;
+        
+        try {
+            liste = new ListeChoix(navetteRMIService.getServiceNavetteRemote().recupererListeNavettes(infosCompte()));
+        } catch (TokenInvalideException ex) {
+            Logger.getLogger(AppLourdClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     public String[] infosCompte() {

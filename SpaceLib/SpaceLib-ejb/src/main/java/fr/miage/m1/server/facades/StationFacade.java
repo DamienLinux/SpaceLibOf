@@ -42,16 +42,17 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
         Root<Station> root = query.from(Station.class);
         query.where(build.equal(root.get("nom"), nom));
         stations = getEntityManager().createQuery(query).getResultList();
-        if (stations.size() > 0) {
+        if (stations != null && stations.size() > 0) {
             return stations.get(0);
         } //else
         return null;
     }
 
     @Override
-    public void creerStation(String nom) {
+    public Station creerStation(String nom) {
         Station station = new Station(nom);
         create(station);
+        return station;
     }
     
 }
