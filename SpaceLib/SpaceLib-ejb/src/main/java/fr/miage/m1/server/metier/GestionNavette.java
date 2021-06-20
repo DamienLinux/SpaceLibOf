@@ -109,7 +109,9 @@ public class GestionNavette implements GestionNavetteLocal {
     public final String ERREUR_RESERVATION_INEXISTANTE = "Erreur 18 : Aucune réservation n'a été effectué pour ce compte.";
 
     @Override
-    public void annule(String[] infosCompte, String idReservation) throws TokenInvalideException, IdReservationIncorrecteException, MauvaisUtilisateurReservationException {
+    public void annule(String[] infosCompte, String idReservation) 
+                throws TokenInvalideException, IdReservationIncorrecteException, 
+                       MauvaisUtilisateurReservationException {
         Compte compte = compteFacade.verificationAcces(infosCompte);
         Voyage voyage = voyageFacade.find(idReservation);
         String operation;
