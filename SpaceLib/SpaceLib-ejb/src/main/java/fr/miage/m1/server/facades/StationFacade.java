@@ -93,7 +93,7 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
             }
         }
         choixQuais = (int) (Math.random() * (quaisDisponibles.size() - 1));
-        if (choixQuais >= 0) {
+        if (choixQuais >= 0 && quaisDisponibles.size() > 0) {
             return quaisDisponibles.get(choixQuais);
         }
         return null;

@@ -268,7 +268,9 @@ public class AppLourdClient {
                     System.out.println(ERREUR_PASSAGERS_NAVETTE);
                 }
             } while (!valide && !exit);
-            reservationEnCours = true;
+            if (valide) {
+               reservationEnCours = true; 
+            }
             System.out.println("Réservation effectué. ID de la réservation (à noter) : " + idReservation);
         }
     }
@@ -322,7 +324,9 @@ public class AppLourdClient {
                     System.out.println(ERREUR_PASSAGERS_NAVETTE);
                 }
             } while (!valide && !exit);
-            voyageEnCours = true;
+            if (valide) {
+              voyageEnCours = true;  
+            }
             System.out.println("Navette prête d'utilisation, bon voyage !");
         }
     }
