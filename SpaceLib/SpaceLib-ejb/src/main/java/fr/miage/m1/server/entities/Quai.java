@@ -129,8 +129,16 @@ public class Quai implements Serializable {
         voyagesADestination.add(voyage);
     }
     
+    public void retirerVoyagesADestination(Voyage voyage) {
+        voyagesADestination.remove(voyage);
+    }
+    
     public void ajouterVoyagesDepart(Voyage voyage) {
         voyagesDepart.add(voyage);
+    }
+    
+    public void retirerVoyagesDepart(Voyage voyage) {
+        voyagesDepart.remove(voyage);
     }
     
     public void ajouterRevision(Revision revision) {

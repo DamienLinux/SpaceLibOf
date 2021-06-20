@@ -79,6 +79,14 @@ public class QuaiFacade extends AbstractFacade<Quai> implements QuaiFacadeLocal 
         edit(depart);
         edit(destination);
     }
+    
+    @Override
+    public void retirerVoyage(Quai depart, Quai destination, Voyage voyage) {
+        depart.retirerVoyagesDepart(voyage);
+        destination.retirerVoyagesADestination(voyage);
+        edit(depart);
+        edit(destination);
+    }
 
     @Override
     public Quai findByNavette(Navette navette) {
