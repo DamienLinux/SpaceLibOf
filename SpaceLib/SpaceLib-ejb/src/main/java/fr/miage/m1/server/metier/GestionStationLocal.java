@@ -33,4 +33,6 @@ public interface GestionStationLocal {
     public String suggererVoyages();
     
     public Map<Station, Float> calculerNavettesDisponibles();
+    
+    public Map<Station, Float> calculerQuaisDisponiblesJPlus10();
 }

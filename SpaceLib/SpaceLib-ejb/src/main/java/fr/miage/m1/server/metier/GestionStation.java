@@ -10,6 +10,7 @@ import fr.miage.m1.server.entities.Station;
 import fr.miage.m1.server.facades.CompteFacadeLocal;
 import fr.miage.m1.server.facades.QuaiFacadeLocal;
 import fr.miage.m1.server.facades.StationFacadeLocal;
+import fr.miage.m1.server.facades.VoyageFacadeLocal;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationExistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
@@ -35,6 +36,9 @@ public class GestionStation implements GestionStationLocal {
 
     @EJB
     private CompteFacadeLocal compteFacade;
+    
+    @EJB
+    private VoyageFacadeLocal voyageFacade;
     
     private final String ERREUR_STATION_EXISTANTE = "Erreur 11 : Station existe déjà.";
 
@@ -92,12 +96,12 @@ public class GestionStation implements GestionStationLocal {
         Map<Station, Float> disponibilite = new HashMap<>();
         List<Station> stations = stationFacade.findAll();
         List<Quai> quais;
-        int dispoQuai = 0;
         
         for(Station s : stations) {
+            int dispoQuai = 0;
             quais = s.getQuais();
             for(Quai q : quais) {
-                if(q.getNavette().equals(null)) {
+                if(q.getNavette() == null) {
                     dispoQuai++;
                 }
             }
@@ -145,5 +149,12 @@ public class GestionStation implements GestionStationLocal {
             }
         }
         return stationDispo;
+    }
+
+    @Override
+    public Map<Station, Float> calculerQuaisDisponiblesJPlus10() {
+        Map<Station, Float> disponibilite = new HashMap<>();
+                      
+        return disponibilite;
     }
 }
