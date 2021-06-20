@@ -42,13 +42,13 @@ public class ServicesNavetteRemote implements ServicesNavetteRemoteRemote {
     }
 
     @Override
-    public void reserve(String[] infosCompte, String stationAttachement, String destination, 
+    public Long reserve(String[] infosCompte, String stationAttachement, String destination, 
                         String dateDepart, int nbPassagers)
                 throws TokenInvalideException, AucuneDestinationException, 
                        QuaiIndisponibleException, StationInexistanteException, 
                        NavettesIndisponibleException, ParseException,
                        DestinationIncorrecteException, NavettePassagersException {
-        gestionNavette.reserve(infosCompte, stationAttachement, destination, dateDepart, nbPassagers);
+        return gestionNavette.reserve(infosCompte, stationAttachement, destination, dateDepart, nbPassagers);
     }
 
     @Override

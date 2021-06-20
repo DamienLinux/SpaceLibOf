@@ -31,7 +31,7 @@ import javax.ejb.Local;
  */
 @Local
 public interface GestionNavetteLocal {
-    public void reserve(String[] infosCompte, String stationAttachement, String destination, 
+    public Long reserve(String[] infosCompte, String stationAttachement, String destination, 
                         String dateDepart, int nbPassagers)
                 throws TokenInvalideException, AucuneDestinationException, 
                        QuaiIndisponibleException, StationInexistanteException, 

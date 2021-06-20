@@ -113,7 +113,7 @@ public class GestionNavette implements GestionNavetteLocal {
                 throws TokenInvalideException, IdReservationIncorrecteException, 
                        MauvaisUtilisateurReservationException {
         Compte compte = compteFacade.verificationAcces(infosCompte);
-        Voyage voyage = voyageFacade.find(idReservation);
+        Voyage voyage = voyageFacade.find(Long.parseLong(idReservation));
         String operation;
         Operation operationAjoute;
 
@@ -122,7 +122,7 @@ public class GestionNavette implements GestionNavetteLocal {
         }
 
         Navette navette = voyage.getNavette();
-        if (!compte.equals(navette.getCompte())) {
+        if (!compte.getIdentifiant().equals(navette.getCompte().getIdentifiant())) {
             throw new MauvaisUtilisateurReservationException(ERREUR_RESERVATION_MAUVAIS_UTILISATEUR);
         }
 
@@ -145,7 +145,7 @@ public class GestionNavette implements GestionNavetteLocal {
     }
 
     @Override
-    public void reserve(String[] infosCompte, String stationAttachement, String destination,
+    public Long reserve(String[] infosCompte, String stationAttachement, String destination,
             String dateDepart, int nbPassagers)
             throws TokenInvalideException, AucuneDestinationException,
             QuaiIndisponibleException, StationInexistanteException,
@@ -208,6 +208,7 @@ public class GestionNavette implements GestionNavetteLocal {
         compte.ajouterOperation(operationAjoute);
         navetteFacade.edit(navetteUtilise);
         compteFacade.edit(compte);
+        return voyage.getId();
     }
 
 

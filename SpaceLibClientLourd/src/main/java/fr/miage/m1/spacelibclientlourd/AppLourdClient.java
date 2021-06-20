@@ -133,6 +133,7 @@ public class AppLourdClient {
         String depart;
         depart = compteRMIService.getServiceCompteRemote().reservationEnCours(infosCompte());
         reservationEnCours = (depart != null);
+        System.out.println("DEPART : " + depart);
         if (reservationEnCours && depart.equals(stationRattachement)) {
             System.out.println("Vous avez une réservation pour " + stationRattachement + " !");
             choixDepart();
@@ -219,9 +220,13 @@ public class AppLourdClient {
         String stationDestination,
                dateDepart;
         ConsoleVoyage console;
-        boolean valide;
+        boolean valide,
+                exit;
         int nbPassagers;
+        Long idReservation;
         
+        idReservation = -1L;
+        exit = false;
         if (reservationEnCours || voyageEnCours) {
             System.out.println(ERREUR_RESERVATION_EFFECTUE);
         } else {
@@ -233,7 +238,7 @@ public class AppLourdClient {
                 dateDepart = console.saisieDateArrivee();
                 nbPassagers = console.saisieNbPassagers();
                 try {
-                    navetteRMIService.getServiceNavetteRemote().reserve(infosCompte(), stationRattachement, stationDestination, dateDepart, nbPassagers);
+                    idReservation = navetteRMIService.getServiceNavetteRemote().reserve(infosCompte(), stationRattachement, stationDestination, dateDepart, nbPassagers);
                 } catch (TokenInvalideException ex) {
                     valide = false;
                     System.out.println(ERREUR_ACCES_NON_AUTORISE);
@@ -242,24 +247,27 @@ public class AppLourdClient {
                     System.out.println(ERREUR_DESTINATION_INEXISTANTE);
                 } catch (QuaiIndisponibleException ex) {
                     valide = false;
+                    exit = true;
                     System.out.println(ERREUR_QUAI_INDISPONIBLE);
                 } catch (StationInexistanteException ex) {
                     valide = false;
                     System.out.println(ERREUR_STATION_INEXISTANTE);
                 } catch (NavettesIndisponibleException ex) {
                     valide = false;
+                    exit = true;
                     System.out.println(ERREUR_NAVETTE_INDISPONIBLE);
                 } catch (ParseException ex) {
                     valide = false;
+                    exit = true;
                     System.out.println(ERREUR_DIVERS);
                 } catch (DestinationIncorrecteException ex) {
                     System.out.println(ERREUR_MEME_DESTINATION);
                 } catch (NavettePassagersException ex) {
                     System.out.println(ERREUR_PASSAGERS_NAVETTE);
                 }
-            } while (!valide);
+            } while (!valide && !exit);
             reservationEnCours = true;
-            System.out.println("Réservation effectué.");
+            System.out.println("Réservation effectué. ID de la réservation (à noter) : " + idReservation);
         }
     }
     
@@ -300,15 +308,23 @@ public class AppLourdClient {
     public void annulerReservation() {
         ConsoleVoyage console = new ConsoleVoyage(service);
         String id = console.saisieIdReservation();
+        boolean valide = true;
         
         try {
         navetteRMIService.getServiceNavetteRemote().annule(infosCompte(), id);
         } catch (TokenInvalideException ex) {
+            valide = false;
             System.out.println(ERREUR_ACCES_NON_AUTORISE);
         } catch (IdReservationIncorrecteException ex) {
+            valide = false;
             System.out.println(ERREUR_ID_RESERVATION_INCORRECTE);
         } catch (MauvaisUtilisateurReservationException ex) {
+            valide = false;
             System.out.println(ERREUR_RESERVATION_MAUVAIS_UTILISATEUR);
+        }
+        if (valide) {
+            System.out.println("Réservation " + id + " annulée.");
+            reservationEnCours = false;
         }
     }
     
