@@ -70,6 +70,6 @@ public class ConsoleVoyage {
     }
     
     public int saisieNbPassagers() {
-        return (1 + service.saisieNombre("Combien de passagez seront avec vous ? : ", 0, (Integer.MAX_VALUE - 2)));
+        return service.saisieNombre("Combien de passagez seront avec vous ? : ", 0, (Integer.MAX_VALUE - 2));
     }
 }

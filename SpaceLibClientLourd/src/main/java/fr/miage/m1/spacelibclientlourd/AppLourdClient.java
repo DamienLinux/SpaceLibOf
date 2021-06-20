@@ -293,6 +293,7 @@ public class AppLourdClient {
                 valide = true;
                 stationDestination = console.saisieVoyage(liste);
                 nbPassagers = console.saisieNbPassagers();
+                System.out.println(nbPassagers);
                 try {
                     navetteRMIService.getServiceNavetteRemote().utiliseNavette(infosCompte(), stationRattachement, stationDestination, nbPassagers);
                 } catch (TokenInvalideException ex) {
