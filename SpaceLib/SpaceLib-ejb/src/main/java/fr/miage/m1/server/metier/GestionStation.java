@@ -5,6 +5,7 @@
  */
 package fr.miage.m1.server.metier;
 
+import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
 import fr.miage.m1.server.facades.CompteFacadeLocal;
 import fr.miage.m1.server.facades.QuaiFacadeLocal;
@@ -13,7 +14,9 @@ import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationExistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -82,5 +85,65 @@ public class GestionStation implements GestionStationLocal {
             }
         }
         return nomsStation;
+    }
+    
+    @Override
+    public Map<Station, Float> calculerQuaisDisponibles() {
+        Map<Station, Float> disponibilite = new HashMap<>();
+        List<Station> stations = stationFacade.findAll();
+        List<Quai> quais;
+        int dispoQuai = 0;
+        
+        for(Station s : stations) {
+            quais = s.getQuais();
+            for(Quai q : quais) {
+                if(q.getNavette().equals(null)) {
+                    dispoQuai++;
+                }
+            }
+            disponibilite.put(s, new Float((dispoQuai)/(s.getQuais().size())));
+        }                
+        return disponibilite;
+    }
+    
+    @Override
+    public Map<Station, Float> calculerNavettesDisponibles() {
+        Map<Station, Float> disponibilite = new HashMap<>();
+        
+        return disponibilite;
+    }
+
+    @Override
+    public String suggererVoyages() {
+        String voyages = "Voyages recommandés :\n";
+        Map<Station, Float> disponibilite = calculerQuaisDisponibles();
+        for(Station s : disponibilite.keySet()) {
+            if(disponibilite.get(s) <= 0.1) {
+                voyages += s.getNom() + " (" + disponibilite.get(s) + "% de disponibilité)" + " vers " + stationPlusDispo(disponibilite).getNom() + "\n";
+            } else if (disponibilite.get(s) >= 0.9) {
+                voyages += s.getNom() + " (" + disponibilite.get(s) + "% de disponibilité)" + " vers " + stationMoinsDispo(disponibilite).getNom() + "\n";
+            }
+        }
+        return voyages;
+    }
+    
+    private Station stationPlusDispo(Map<Station, Float> disponibilite) {
+        Station stationDispo = disponibilite.keySet().iterator().next();
+        for(Station s : disponibilite.keySet()) {
+            if(disponibilite.get(s) > disponibilite.get(stationDispo)) {
+                stationDispo = s;
+            }
+        }
+        return stationDispo;
+    }
+    
+    private Station stationMoinsDispo(Map<Station, Float> disponibilite) {
+        Station stationDispo = disponibilite.keySet().iterator().next();
+        for(Station s : disponibilite.keySet()) {
+            if(disponibilite.get(s) < disponibilite.get(stationDispo)) {
+                stationDispo = s;
+            }
+        }
+        return stationDispo;
     }
 }

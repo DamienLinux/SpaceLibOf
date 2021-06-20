@@ -10,6 +10,7 @@ import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationExistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Local;
 
 /**
@@ -26,4 +27,10 @@ public interface GestionStationLocal {
     public String carteStations();
     
     public List<String> listeStations(String stationRattachement);
+    
+    public Map<Station, Float> calculerQuaisDisponibles();
+    
+    public String suggererVoyages();
+    
+    public Map<Station, Float> calculerNavettesDisponibles();
 }
