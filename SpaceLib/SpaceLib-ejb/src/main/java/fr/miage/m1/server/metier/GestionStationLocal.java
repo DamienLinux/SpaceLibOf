@@ -30,7 +30,8 @@ public interface GestionStationLocal {
     
     public Map<Station, Float> calculerQuaisDisponibles();
     
-    public String suggererVoyages();
+    public String suggererVoyages(String[] infosCompte) 
+                  throws TokenInvalideException, RoleInvalideException;
     
     public Map<Station, Float> calculerNavettesDisponibles();
     

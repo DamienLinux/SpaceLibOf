@@ -23,4 +23,7 @@ public interface ServicesStationLocal {
                        RoleInvalideException;
 
     public String carteStations();
+    
+    public String suggererVoyages(String[] infosCompte) 
+           throws TokenInvalideException, RoleInvalideException;
 }

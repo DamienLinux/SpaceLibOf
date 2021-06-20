@@ -43,4 +43,15 @@ public class StationWebServices {
     public String carteStation() {
         return ejbRef.carteStations();
     }
+    
+    @WebMethod(operationName = "suggererVoyages")
+    public String suggererVoyages(@WebParam(name = "identifiant") String identifiant, @WebParam(name = "token") String token)
+           throws TokenInvalideException, RoleInvalideException {
+        String[] infosCompte;
+        
+        infosCompte = new String[2];
+        infosCompte[0] = identifiant;
+        infosCompte[1] = token;
+        return ejbRef.suggererVoyages(infosCompte);
+    }
 }

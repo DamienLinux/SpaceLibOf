@@ -74,6 +74,4 @@ public class ServicesNavette implements ServicesNavetteLocal {
     public void annule(String[] infosCompte, String idReservation) throws TokenInvalideException, IdReservationIncorrecteException, MauvaisUtilisateurReservationException {
         gestionNavette.annule(infosCompte, idReservation);
     }
-    
-    
 }

@@ -38,4 +38,10 @@ public class ServicesStation implements ServicesStationLocal {
         return gestionStation.carteStations();
     }
 
+    @Override
+    public String suggererVoyages(String[] infosCompte) 
+           throws TokenInvalideException, RoleInvalideException {
+        return gestionStation.suggererVoyages(infosCompte);
+    }
+
 }

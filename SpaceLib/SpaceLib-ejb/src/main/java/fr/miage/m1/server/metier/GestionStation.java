@@ -118,7 +118,14 @@ public class GestionStation implements GestionStationLocal {
     }
 
     @Override
-    public String suggererVoyages() {
+    public String suggererVoyages(String[] infosCompte) 
+           throws TokenInvalideException, RoleInvalideException {
+        List<String> rolesAutorises;
+        
+        rolesAutorises = new ArrayList<String>();
+        rolesAutorises.add("Conducteur");
+        rolesAutorises.add("Administrateur");
+        compteFacade.verificationAcces(infosCompte, rolesAutorises);
         String voyages = "Voyages recommandés :\n";
         Map<Station, Float> disponibilite = calculerQuaisDisponibles();
         for(Station s : disponibilite.keySet()) {
