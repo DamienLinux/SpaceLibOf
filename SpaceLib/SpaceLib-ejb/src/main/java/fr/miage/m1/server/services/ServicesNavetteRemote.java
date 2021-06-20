@@ -59,8 +59,7 @@ public class ServicesNavetteRemote implements ServicesNavetteRemoteRemote {
     
     @Override
     public void annule(String[] infosCompte, String idReservation) 
-                throws TokenInvalideException, IdReservationIncorrecteException, 
-                       MauvaisUtilisateurReservationException {
+                throws TokenInvalideException, IdReservationIncorrecteException, MauvaisUtilisateurReservationException {
         gestionNavette.annule(infosCompte, idReservation);
     }
 }
