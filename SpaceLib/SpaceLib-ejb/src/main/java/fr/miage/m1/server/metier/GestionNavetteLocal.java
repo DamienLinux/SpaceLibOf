@@ -62,4 +62,10 @@ public interface GestionNavetteLocal {
     
     public void debutVoyageReserve(String[] infosCompte)
                 throws TokenInvalideException, ReservationInexistanteException;
+    
+    public void utiliseNavette(String[] infosCompte, String stationAttachement, String destination, int nbPassagers) 
+                throws TokenInvalideException, AucuneDestinationException, 
+                       QuaiIndisponibleException, StationInexistanteException, 
+                       NavettesIndisponibleException, ParseException, 
+                       DestinationIncorrecteException, NavettePassagersException;
 }

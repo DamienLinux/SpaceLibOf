@@ -39,6 +39,13 @@ public interface ServicesNavetteRemoteRemote {
                        NavettesIndisponibleException, ParseException,
                        DestinationIncorrecteException, NavettePassagersException;
     
+    public void utiliseNavette(String[] infosCompte, String destination, 
+                        String dateDepart, int nbPassagers)
+                throws TokenInvalideException, AucuneDestinationException, 
+                       QuaiIndisponibleException, StationInexistanteException, 
+                       NavettesIndisponibleException, ParseException,
+                       DestinationIncorrecteException, NavettePassagersException;
+    
     public void debutVoyageReserve(String[] infosCompte)
                 throws TokenInvalideException, ReservationInexistanteException;
 }

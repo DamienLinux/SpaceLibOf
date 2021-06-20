@@ -195,17 +195,6 @@ public class GestionNavette implements GestionNavetteLocal {
         voyage = voyageFacade.creerVoyage(navetteUtilise, navetteUtilise.getQuai(), quaiDestination, dateDepart, dateArrivee, nbPassagers);
         navetteFacade.ajouterVoyage(navetteUtilise, voyage);
         quaiFacade.ajouterVoyage(navetteUtilise.getQuai(), quaiDestination, voyage);
-        operation = VOYAGE_INITIE + " Date de départ : " + dateDepart
-                + " - Date d'arrivée prévue : " + dateArrivee
-                + " - ID de la station de départ : " + stationActuelle.getId()
-                + " - ID de la station d'arrivée : " + stationDestination.getId()
-                + " - ID de la navette : " + navetteUtilise.getId()
-                + " - Identifiant Réservation : " + voyage.getId()
-                + " - Nombre de passagers : " + nbPassagers
-                + " - Date de création de l'opération : " + DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.FRANCE).format(LocalDateTime.now());
-        operationAjoute = operationFacade.ajouterOperation(navetteUtilise, operation);
-        navetteUtilise.ajouterOperation(operationAjoute);
-        compte.ajouterOperation(operationAjoute);
         navetteFacade.edit(navetteUtilise);
         compteFacade.edit(compte);
         return voyage.getId();
@@ -396,6 +385,9 @@ public class GestionNavette implements GestionNavetteLocal {
         List<Voyage> voyages;
         Quai quaiDepart;
         Navette navette;
+        String operation;
+        Voyage voyage;
+        Operation operationAjoute;
         
         compte = compteFacade.verificationAcces(infosCompte);
         navette = compte.getNavette();
@@ -406,11 +398,97 @@ public class GestionNavette implements GestionNavetteLocal {
         if (voyages != null && voyages.size() > 0 && !voyages.get((voyages.size() - 1)).isEnCours()) {
             throw new ReservationInexistanteException(ERREUR_RESERVATION_INEXISTANTE);
         }
+        voyage = voyages.get((voyages.size() - 1));
         quaiDepart = navette.getQuai();
         /* La navette quitte le quais */
         quaiDepart.setNavette(null);
         navette.setQuai(null);
+        operation = VOYAGE_INITIE + " Date de départ : " + voyage.getDateDepart()
+                + " - Date d'arrivée prévue : " + voyage.getDateArriveePrevue()
+                + " - ID de la station de départ : " + voyage.getDepart().getStation().getId()
+                + " - ID de la station d'arrivée : " + voyage.getDestination().getStation().getId()
+                + " - ID de la navette : " + navette.getId()
+                + " - Identifiant Réservation : " + voyage.getId()
+                + " - Nombre de passagers : " + voyage.getNbPassagers()
+                + " - Date de création de l'opération : " + DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.FRANCE).format(LocalDateTime.now());
+        operationAjoute = operationFacade.ajouterOperation(navette, operation);
+        navette.ajouterOperation(operationAjoute);
+        compte.ajouterOperation(operationAjoute);
+        compteFacade.edit(compte);
         quaiFacade.edit(quaiDepart);
         navetteFacade.edit(navette);
+    }
+
+    @Override
+    public void utiliseNavette(String[] infosCompte, String stationAttachement, String destination, int nbPassagers) 
+                throws TokenInvalideException, AucuneDestinationException, 
+                       QuaiIndisponibleException, StationInexistanteException, 
+                       NavettesIndisponibleException, ParseException, 
+                       DestinationIncorrecteException, NavettePassagersException {
+        Quai quaiDestination;
+        Compte compte;
+        Navette navetteUtilise;
+        Station stationDestination;
+        Station stationActuelle;
+        Voyage voyage;
+        List<Voyage> voyages;
+        String operation;
+        Operation operationAjoute;
+        Quai quai;
+        String dateArrivee,
+               dateDepart;
+
+        compte = compteFacade.verificationAcces(infosCompte);
+        stationActuelle = stationFacade.findByName(stationAttachement);
+        if (stationActuelle == null) {
+            throw new StationInexistanteException(ERREUR_STATION_INEXISTANTE);
+        }
+        stationDestination = stationFacade.findByName(destination);
+        if (stationDestination == null) {
+            throw new AucuneDestinationException(ERREUR_DESTINATION_INEXISTANTE);
+        }
+        if (stationDestination == stationActuelle) {
+            throw new DestinationIncorrecteException(ERREUR_DESTINATION_INCORRECTE);
+        }
+        navetteUtilise = stationFacade.findNavetteDisponible(stationActuelle);
+        if (navetteUtilise == null) {
+            throw new NavettesIndisponibleException(ERREUR_NAVETTES_INDISPONIBLE);
+        }
+        voyages = navetteUtilise.getVoyages();
+        if (voyages != null && voyages.size() > 0 && voyages.get((voyages.size() - 1)).isEnCours()) {
+            throw new NavettesIndisponibleException(ERREUR_NAVETTES_INDISPONIBLE);
+        }
+        quaiDestination = stationFacade.findQuaiDisponible(stationDestination);
+        if (quaiDestination == null) {
+            throw new QuaiIndisponibleException(ERREUR_QUAI_INDISPONIBLE);
+        }
+        if (nbPassagers > navetteUtilise.getNbPassagersMaximum()) {
+            throw new NavettePassagersException(ERREUR_PASSAGER_MAXIUM);
+        }
+        dateDepart = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.FRANCE).format(LocalDateTime.now());
+        navetteUtilise.setCompte(compte);
+        compte.setNavette(navetteUtilise);
+        dateArrivee = calculDateArrivee(dateDepart, stationAttachement, destination);
+        voyage = voyageFacade.creerVoyage(navetteUtilise, navetteUtilise.getQuai(), quaiDestination, dateDepart, dateArrivee, nbPassagers);
+        navetteFacade.ajouterVoyage(navetteUtilise, voyage);
+        quai = navetteUtilise.getQuai();
+        quaiFacade.ajouterVoyage(quai, quaiDestination, voyage);
+        operation = VOYAGE_INITIE + " Date de départ : " + dateDepart
+                + " - Date d'arrivée prévue : " + dateArrivee
+                + " - ID de la station de départ : " + stationActuelle.getId()
+                + " - ID de la station d'arrivée : " + stationDestination.getId()
+                + " - ID de la navette : " + navetteUtilise.getId()
+                + " - Identifiant Réservation : " + voyage.getId()
+                + " - Nombre de passagers : " + nbPassagers
+                + " - Date de création de l'opération : " + DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.FRANCE).format(LocalDateTime.now());
+        operationAjoute = operationFacade.ajouterOperation(navetteUtilise, operation);
+        navetteUtilise.ajouterOperation(operationAjoute);
+        compte.ajouterOperation(operationAjoute);
+        /* La navette quitte le quais immédiatement */
+        quai.setNavette(null);
+        navetteUtilise.setQuai(null);
+        navetteFacade.edit(navetteUtilise);
+        compteFacade.edit(compte);
+        quaiFacade.edit(quai);
     }
 }

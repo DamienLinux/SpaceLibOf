@@ -42,11 +42,12 @@ public class AppLourdClient {
     
     
     private final String TEXTE_MENU_CONNECTE = "#------------------------------------------------\n"
-                                                + " 1 - Réserver un voyage\n"
-                                                + " 2 - Visualiser la carte\n"
-                                                + " 3 - Se déconnecter\n"
-                                                + " 4 - Annuler une réservation\n"
-                                                + " 5 - Quitter\n"
+                                                + " 1 - Prendre une navette\n"
+                                                + " 2 - Réserver un voyage\n"
+                                                + " 3 - Visualiser la carte\n"
+                                                + " 4 - Se déconnecter\n"
+                                                + " 5 - Annuler une réservation\n"
+                                                + " 6 - Quitter\n"
                                                 + "#------------------------------------------------\n"
                                                 + "Quelle option choisissez-vous ? : ";
     
@@ -271,6 +272,59 @@ public class AppLourdClient {
         }
     }
     
+    public void utiliserNavette() {
+        ListeChoix liste;
+        String stationDestination,
+               dateDepart;
+        ConsoleVoyage console;
+        boolean valide,
+                exit;
+        int nbPassagers;
+        
+        exit = false;
+        if (reservationEnCours || voyageEnCours) {
+            System.out.println(ERREUR_RESERVATION_EFFECTUE);
+        } else {
+            console = new ConsoleVoyage(service);
+            liste = new ListeChoix(stationRMIService.getServiceStationRemote().listeStations(stationRattachement));
+            do {
+                valide = true;
+                stationDestination = console.saisieVoyage(liste);
+                nbPassagers = console.saisieNbPassagers();
+                try {
+                    navetteRMIService.getServiceNavetteRemote().utiliseNavette(infosCompte(), stationRattachement, stationDestination, nbPassagers);
+                } catch (TokenInvalideException ex) {
+                    valide = false;
+                    System.out.println(ERREUR_ACCES_NON_AUTORISE);
+                } catch (AucuneDestinationException ex) {
+                    valide = false;
+                    System.out.println(ERREUR_DESTINATION_INEXISTANTE);
+                } catch (QuaiIndisponibleException ex) {
+                    valide = false;
+                    exit = true;
+                    System.out.println(ERREUR_QUAI_INDISPONIBLE);
+                } catch (StationInexistanteException ex) {
+                    valide = false;
+                    System.out.println(ERREUR_STATION_INEXISTANTE);
+                } catch (NavettesIndisponibleException ex) {
+                    valide = false;
+                    exit = true;
+                    System.out.println(ERREUR_NAVETTE_INDISPONIBLE);
+                } catch (ParseException ex) {
+                    valide = false;
+                    exit = true;
+                    System.out.println(ERREUR_DIVERS);
+                } catch (DestinationIncorrecteException ex) {
+                    System.out.println(ERREUR_MEME_DESTINATION);
+                } catch (NavettePassagersException ex) {
+                    System.out.println(ERREUR_PASSAGERS_NAVETTE);
+                }
+            } while (!valide && !exit);
+            reservationEnCours = true;
+            System.out.println("Navette prête d'utilisation, bon voyage !");
+        }
+    }
+    
     public String[] infosCompte() {
         String[] infosCompte;
         
@@ -340,21 +394,25 @@ public class AppLourdClient {
         executionEnCours = true;
         do {
             if (token != null) {
-                choix = service.saisieNombre(TEXTE_MENU_CONNECTE, 1, 5);
+                choix = service.saisieNombre(TEXTE_MENU_CONNECTE, 1, 6);
                 switch (choix) {
                 case 1:
+                    System.out.println("Utilisation d'une navette.");
+                    utiliserNavette();
+                    break;
+                case 2:
                     System.out.println("Réservation d'un voyage.");
                     reserverVoyage();
                     break;
-                case 2:
+                case 3:
                     System.out.println("Accès à la carte.");
                     visualiserCarte();
                     break;
-                case 3:
+                case 4:
                     System.out.println("Déconnexion.");
                     deconnexion();
                     break;
-                case 4:
+                case 5:
                     System.out.println("Annulation.");
                     annulerReservation();
                     break;
