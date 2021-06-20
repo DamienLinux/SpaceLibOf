@@ -8,6 +8,8 @@ package fr.miage.m1.server.services;
 import fr.miage.m1.server.metier.GestionNavetteLocal;
 import fr.miage.m1.shared.exceptions.AucuneDestinationException;
 import fr.miage.m1.shared.exceptions.DestinationIncorrecteException;
+import fr.miage.m1.shared.exceptions.IdReservationIncorrecteException;
+import fr.miage.m1.shared.exceptions.MauvaisUtilisateurReservationException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePassagersException;
 import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
@@ -47,5 +49,9 @@ public class ServicesNavetteRemote implements ServicesNavetteRemoteRemote {
                        NavettesIndisponibleException, ParseException,
                        DestinationIncorrecteException, NavettePassagersException {
         gestionNavette.reserve(infosCompte, stationAttachement, destination, dateDepart, nbPassagers);
+    }
+    
+    public void annule(String[] infosCompte, String idReservation) throws TokenInvalideException, IdReservationIncorrecteException, MauvaisUtilisateurReservationException {
+        gestionNavette.annule(infosCompte, idReservation);
     }
 }
