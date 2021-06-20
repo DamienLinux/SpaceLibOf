@@ -261,8 +261,10 @@ public class AppLourdClient {
                     exit = true;
                     System.out.println(ERREUR_DIVERS);
                 } catch (DestinationIncorrecteException ex) {
+                    valide = false;
                     System.out.println(ERREUR_MEME_DESTINATION);
                 } catch (NavettePassagersException ex) {
+                    valide = false;
                     System.out.println(ERREUR_PASSAGERS_NAVETTE);
                 }
             } while (!valide && !exit);
@@ -313,12 +315,14 @@ public class AppLourdClient {
                     exit = true;
                     System.out.println(ERREUR_DIVERS);
                 } catch (DestinationIncorrecteException ex) {
+                    valide = false;
                     System.out.println(ERREUR_MEME_DESTINATION);
                 } catch (NavettePassagersException ex) {
+                    valide = false;
                     System.out.println(ERREUR_PASSAGERS_NAVETTE);
                 }
             } while (!valide && !exit);
-            reservationEnCours = true;
+            voyageEnCours = true;
             System.out.println("Navette prête d'utilisation, bon voyage !");
         }
     }

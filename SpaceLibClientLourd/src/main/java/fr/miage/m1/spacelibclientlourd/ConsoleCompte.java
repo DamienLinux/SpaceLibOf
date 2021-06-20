@@ -12,7 +12,7 @@ package fr.miage.m1.spacelibclientlourd;
 public class ConsoleCompte {    
     private final String ERREUR_MOT_DE_PASSE = "Vous n'avez pas saisi le même mot de passe.";
     
-    private final String[] ROLE = {"Utilisateur", "Mécanicien", "Administrateur"};
+    private final String[] ROLE = {"Utilisateur", "Mécanicien", "Administrateur", "Conducteur"};
     
     private ServiceClient service;
     

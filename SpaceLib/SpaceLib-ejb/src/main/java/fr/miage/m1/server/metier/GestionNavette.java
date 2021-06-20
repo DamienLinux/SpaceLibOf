@@ -593,7 +593,7 @@ public class GestionNavette implements GestionNavetteLocal {
         if (quaiDestination == null) {
             throw new QuaiIndisponibleException(ERREUR_QUAI_INDISPONIBLE);
         }
-        if (nbPassagers > navetteUtilise.getNbPassagersMaximum()) {
+        if (nbPassagers >= navetteUtilise.getNbPassagersMaximum()) {
             throw new NavettePassagersException(ERREUR_PASSAGER_MAXIUM);
         }
         dateDepart = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.FRANCE).format(LocalDateTime.now());
