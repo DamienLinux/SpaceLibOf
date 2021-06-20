@@ -11,9 +11,13 @@ import fr.miage.m1.server.entities.Voyage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -50,6 +54,21 @@ public class VoyageFacade extends AbstractFacade<Voyage> implements VoyageFacade
         voyage.setEnCours(false);
         edit(voyage);
         return voyage;
+    }
+
+    @Override
+    public Voyage findByNavette(Navette navette) {
+        List<Voyage> voyages;
+        
+        CriteriaBuilder build = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Voyage> query = build.createQuery(Voyage.class);
+        Root<Voyage> root = query.from(Voyage.class);
+        query.where(build.equal(root.get("navette"), navette));
+        voyages = getEntityManager().createQuery(query).getResultList();
+        if (voyages != null && voyages.size() > 0) {
+            return voyages.get(0);
+        } //else
+        return null;
     }
     
 }

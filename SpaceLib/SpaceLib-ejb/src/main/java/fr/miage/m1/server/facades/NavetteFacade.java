@@ -10,6 +10,7 @@ import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
 import fr.miage.m1.server.entities.Voyage;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -75,11 +76,13 @@ public class NavetteFacade extends AbstractFacade<Navette> implements NavetteFac
 
     @Override
     public List<Navette> listNavettesAReviser() {
+        List<Navette> navettes;
         CriteriaBuilder build = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Navette> query = build.createQuery(Navette.class);
         Root<Navette> root = query.from(Navette.class);
         query.where(build.equal(root.get("aReviser"), true));
-        return getEntityManager().createQuery(query).getResultList();
+        navettes = getEntityManager().createQuery(query).getResultList();
+        return navettes;
     }
 
     @Override

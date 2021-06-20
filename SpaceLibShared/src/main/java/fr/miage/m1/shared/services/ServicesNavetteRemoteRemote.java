@@ -8,6 +8,7 @@ package fr.miage.m1.shared.services;
 import fr.miage.m1.shared.exceptions.AucuneDestinationException;
 import fr.miage.m1.shared.exceptions.DestinationIncorrecteException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
+import fr.miage.m1.shared.exceptions.NavettePassagersException;
 import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
 import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.ReservationExistanteException;
@@ -31,5 +32,5 @@ public interface ServicesNavetteRemoteRemote {
                 throws TokenInvalideException, AucuneDestinationException, 
                        QuaiIndisponibleException, StationInexistanteException, 
                        NavettesIndisponibleException, ParseException,
-                       DestinationIncorrecteException;
+                       DestinationIncorrecteException, NavettePassagersException;
 }

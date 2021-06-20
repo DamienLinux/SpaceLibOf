@@ -6,14 +6,19 @@
 package fr.miage.m1.server.metier;
 
 import fr.miage.m1.server.entities.Compte;
+import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
+import fr.miage.m1.server.entities.Voyage;
 import fr.miage.m1.server.facades.CompteFacadeLocal;
+import fr.miage.m1.server.facades.QuaiFacadeLocal;
 import fr.miage.m1.server.facades.StationFacadeLocal;
+import fr.miage.m1.server.facades.VoyageFacadeLocal;
 import fr.miage.m1.shared.exceptions.CompteInexistantException;
 import fr.miage.m1.shared.exceptions.IdentifiantExistantException;
 import fr.miage.m1.shared.exceptions.MotDePasseInvalideException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -23,6 +28,9 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class GestionCompte implements GestionCompteLocal {
+
+    @EJB
+    private VoyageFacadeLocal voyageFacade;
     
     private final String ERREUR_STATION_INEXISTANTE = "Erreur 10 : Station inexistante";
 
@@ -97,5 +105,20 @@ public class GestionCompte implements GestionCompteLocal {
         }
         compte.setStationRattachement(station);
         station.ajouterCompte(compte);
+    }
+
+    @Override
+    public String reservationEnCours(String[] infosCompte) {
+        Compte compte;
+        Voyage voyage;
+        
+        compte = compteFacade.findCompteByIdentifiant(infosCompte[0]);
+        if (compte != null) {
+            voyage = voyageFacade.findByNavette(compte.getNavette());
+            if (voyage != null && voyage.isEnCours()) {
+                return voyage.getDestination().getStation().getNom();
+            }
+        }
+        return null;
     }
 }

@@ -38,4 +38,6 @@ public interface VoyageFacadeLocal {
                   throws ParseException;
     
     public Voyage voyageAcheve(Voyage voyage);
+    
+    public Voyage findByNavette(Navette navette);
 }

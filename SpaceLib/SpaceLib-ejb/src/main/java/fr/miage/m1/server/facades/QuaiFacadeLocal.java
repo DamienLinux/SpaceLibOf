@@ -5,6 +5,7 @@
  */
 package fr.miage.m1.server.facades;
 
+import fr.miage.m1.server.entities.Navette;
 import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
 import fr.miage.m1.server.entities.Voyage;
@@ -37,4 +38,6 @@ public interface QuaiFacadeLocal {
     public Quai attributionQuai(Station station);
     
     public void ajouterVoyage(Quai depart, Quai destination, Voyage voyage);
+    
+    public Quai findByNavette(Navette navette);
 }

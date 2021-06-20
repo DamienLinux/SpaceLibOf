@@ -30,7 +30,7 @@ public interface ServicesNavetteLocal {
                 throws TokenInvalideException, NavetteInexistanteException,
                        RevisionInexistanteException, RoleInvalideException;
     
-    public List<String> recupererInformationsRevisions(String[] infosCompte)
+    public List<String> recupererInformationsRevisions(String[] infosCompte, String stationAttache)
                         throws TokenInvalideException, RoleInvalideException;
     
     public void ajouterNavette(String[] infosCompte, String navette, int nbPassagers, String station)

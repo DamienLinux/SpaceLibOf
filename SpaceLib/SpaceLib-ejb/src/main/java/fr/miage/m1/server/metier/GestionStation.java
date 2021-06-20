@@ -77,7 +77,7 @@ public class GestionStation implements GestionStationLocal {
         stations = stationFacade.findAll();
         nomsStation = new ArrayList<String>();
         for (Station station : stations) {
-            if (station.getNom() != stationRattachement) {
+            if (!station.getNom().equals(stationRattachement)) {
                 nomsStation.add(station.getNom());
             }
         }

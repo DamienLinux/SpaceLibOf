@@ -5,6 +5,7 @@
  */
 package fr.miage.m1.server.facades;
 
+import fr.miage.m1.server.entities.Navette;
 import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
 import fr.miage.m1.server.entities.Voyage;
@@ -66,9 +67,6 @@ public class QuaiFacade extends AbstractFacade<Quai> implements QuaiFacadeLocal 
         );
         quais = getEntityManager().createQuery(query).getResultList();
         if (quais != null && quais.size() > 0) {
-            for (int i = 0 ; i < quais.size() ; i++) {
-                System.out.println(" TEST 1-" + i + " : " + quais.get(i).getNavette());
-            }
             return quais.get(0);
         } //else
         return null;
@@ -76,13 +74,25 @@ public class QuaiFacade extends AbstractFacade<Quai> implements QuaiFacadeLocal 
 
     @Override
     public void ajouterVoyage(Quai depart, Quai destination, Voyage voyage) {
-        System.out.println("OUAIS MAIS C'EST PAS TOI QUI DECIDE");
         depart.ajouterVoyagesDepart(voyage);
-        System.out.println("TA GUEULE");
         destination.ajouterVoyagesADestination(voyage);
-        System.out.println("WTF");
         depart.setNavette(null); // La Navette quitte le quai
         edit(depart);
         edit(destination);
+    }
+
+    @Override
+    public Quai findByNavette(Navette navette) {
+        List<Quai> quais;
+        
+        CriteriaBuilder build = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Quai> query = build.createQuery(Quai.class);
+        Root<Quai> root = query.from(Quai.class);
+        query.where(build.equal(root.get("navette"), navette));
+        quais = getEntityManager().createQuery(query).getResultList();
+        if (quais != null && quais.size() > 0) {
+            return quais.get(0);
+        } //else
+        return null;
     }
 }

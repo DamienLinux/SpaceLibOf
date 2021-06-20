@@ -12,6 +12,7 @@ import fr.miage.m1.shared.exceptions.DestinationIncorrecteException;
 import fr.miage.m1.shared.exceptions.IdentifiantExistantException;
 import fr.miage.m1.shared.exceptions.MotDePasseInvalideException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
+import fr.miage.m1.shared.exceptions.NavettePassagersException;
 import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
 import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
@@ -62,6 +63,10 @@ public class AppLourdClient {
     
     private final String ERREUR_MEME_DESTINATION = "Vous ne pouvez pas choisir en destination une station où vous vous trouvez déjà.";
     
+    private final String ERREUR_RESERVATION_EFFECTUE = "Vous avez déjà effectué une réservation.";
+    
+    private final String ERREUR_PASSAGERS_NAVETTE = "Il n'y a pas assez de place sur cette navette.";
+    
     private ServiceClient service;
     
     private RMICompteServiceManager compteRMIService;
@@ -107,6 +112,17 @@ public class AppLourdClient {
         token = resultatCompte[1];
         System.out.println("Bienvenue sur votre espace de connexion " + identifiant + " !");
         indicationStationRattachement();
+        rechercheReservationEnCours();
+    }
+    
+    public void rechercheReservationEnCours() {
+        String destination;
+        destination = compteRMIService.getServiceCompteRemote().reservationEnCours(infosCompte());
+        voyageEnCours = (destination != null);
+        if (voyageEnCours && destination.equals(stationRattachement)) {
+            System.out.println("Vous êtes bien arrivé sur la station " + stationRattachement + " !");
+            indiquerArrivee();
+        }
     }
     
     public void indicationStationRattachement() {
@@ -156,38 +172,44 @@ public class AppLourdClient {
         boolean valide;
         int nbPassagers;
         
-        do {
-            valide = true;
+        if (voyageEnCours) {
+            System.out.println(ERREUR_RESERVATION_EFFECTUE);
+        } else {
             console = new ConsoleVoyage(service);
             liste = new ListeChoix(stationRMIService.getServiceStationRemote().listeStations(stationRattachement));
-            stationDestination = console.saisieVoyage(liste);
-            dateArrivee = console.saisieDateArrivee();
-            nbPassagers = console.saisieNbPassagers();
-            try {
-                navetteRMIService.getServiceNavetteRemote().reserve(infosCompte(), stationRattachement, stationDestination, dateArrivee, nbPassagers);
-            } catch (TokenInvalideException ex) {
-                valide = false;
-                System.out.println(ERREUR_ACCES_NON_AUTORISE);
-            } catch (AucuneDestinationException ex) {
-                valide = false;
-                System.out.println(ERREUR_DESTINATION_INEXISTANTE);
-            } catch (QuaiIndisponibleException ex) {
-                valide = false;
-                System.out.println(ERREUR_QUAI_INDISPONIBLE);
-            } catch (StationInexistanteException ex) {
-                valide = false;
-                System.out.println(ERREUR_STATION_INEXISTANTE);
-            } catch (NavettesIndisponibleException ex) {
-                valide = false;
-                System.out.println(ERREUR_NAVETTE_INDISPONIBLE);
-            } catch (ParseException ex) {
-                valide = false;
-                System.out.println(ERREUR_DIVERS);
-            } catch (DestinationIncorrecteException ex) {
-                System.out.println(ERREUR_MEME_DESTINATION);
-            }
-        } while (!valide);
-        voyageEnCours = true;
+            do {
+                valide = true;
+                stationDestination = console.saisieVoyage(liste);
+                dateArrivee = console.saisieDateArrivee();
+                nbPassagers = console.saisieNbPassagers();
+                try {
+                    navetteRMIService.getServiceNavetteRemote().reserve(infosCompte(), stationRattachement, stationDestination, dateArrivee, nbPassagers);
+                } catch (TokenInvalideException ex) {
+                    valide = false;
+                    System.out.println(ERREUR_ACCES_NON_AUTORISE);
+                } catch (AucuneDestinationException ex) {
+                    valide = false;
+                    System.out.println(ERREUR_DESTINATION_INEXISTANTE);
+                } catch (QuaiIndisponibleException ex) {
+                    valide = false;
+                    System.out.println(ERREUR_QUAI_INDISPONIBLE);
+                } catch (StationInexistanteException ex) {
+                    valide = false;
+                    System.out.println(ERREUR_STATION_INEXISTANTE);
+                } catch (NavettesIndisponibleException ex) {
+                    valide = false;
+                    System.out.println(ERREUR_NAVETTE_INDISPONIBLE);
+                } catch (ParseException ex) {
+                    valide = false;
+                    System.out.println(ERREUR_DIVERS);
+                } catch (DestinationIncorrecteException ex) {
+                    System.out.println(ERREUR_MEME_DESTINATION);
+                } catch (NavettePassagersException ex) {
+                    System.out.println(ERREUR_PASSAGERS_NAVETTE);
+                }
+            } while (!valide);
+            voyageEnCours = true;
+        }
     }
     
     public String[] infosCompte() {
@@ -235,10 +257,6 @@ public class AppLourdClient {
         boolean executionEnCours;
         
         executionEnCours = true;
-        if (voyageEnCours) {
-            System.out.println("Vous êtes bien arrivé sur la station " + stationRattachement + " !");
-            indiquerArrivee();
-        }
         do {
             if (token != null) {
                 choix = service.saisieNombre(TEXTE_MENU_CONNECTE, 1, 4);

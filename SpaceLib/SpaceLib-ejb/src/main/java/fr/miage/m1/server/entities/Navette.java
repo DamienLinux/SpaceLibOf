@@ -48,7 +48,6 @@ public class Navette implements Serializable {
     @OneToMany(mappedBy = "navette")
     private List<Operation> operations;
 
-    
     @OneToOne(mappedBy = "navette")
     private Quai quai;
 

@@ -33,7 +33,7 @@ public class Revision implements Serializable {
     @ManyToOne
     private Navette navette;
     
-    private boolean enCours;
+    private boolean enCours = true;
     
     public Revision() {
     }

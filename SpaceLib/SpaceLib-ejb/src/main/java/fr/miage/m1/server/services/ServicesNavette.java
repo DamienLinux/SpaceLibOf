@@ -45,9 +45,9 @@ public class ServicesNavette implements ServicesNavetteLocal {
     }
 
     @Override
-    public List<String> recupererInformationsRevisions(String[] infosCompte) 
+    public List<String> recupererInformationsRevisions(String[] infosCompte, String stationAttache) 
                         throws TokenInvalideException, RoleInvalideException {
-        return gestionNavette.recupererInformationsRevisions(infosCompte);
+        return gestionNavette.recupererInformationsRevisions(infosCompte, stationAttache);
     }
 
     @Override

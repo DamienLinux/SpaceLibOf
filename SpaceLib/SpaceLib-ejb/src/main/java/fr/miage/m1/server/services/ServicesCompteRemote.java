@@ -45,4 +45,9 @@ public class ServicesCompteRemote implements ServicesCompteRemoteRemote {
     public void renseignerStationRattachement(String[] infosCompte, String nomStation) throws TokenInvalideException, StationInexistanteException {
         gestionCompte.renseignerStationRattachement(infosCompte, nomStation);
     }
+
+    @Override
+    public String reservationEnCours(String[] infosCompte) {
+        return gestionCompte.reservationEnCours(infosCompte);
+    }
 }

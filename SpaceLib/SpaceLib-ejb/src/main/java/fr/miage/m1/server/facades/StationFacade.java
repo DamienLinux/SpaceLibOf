@@ -74,8 +74,11 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
             }
         }
         /* Retourne une des navettes aléatoirement */
-        choixNavette = (int) (Math.random() * (station.getQuais().size() - 1));
-        return navettesDisponibles.get(choixNavette);
+        choixNavette = (int) (Math.random() * (navettesDisponibles.size() - 1));
+        if (choixNavette > 0) {
+            return navettesDisponibles.get(choixNavette);
+        }
+        return null;
     }
 
     @Override
@@ -90,8 +93,11 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
             }
         }
         /* Retourne un quais aléatoirement */
-        choixQuais = (int) (Math.random() * (station.getQuais().size() - 1));
-        return quaisDisponibles.get(choixQuais);
+        choixQuais = (int) (Math.random() * (quaisDisponibles.size() - 1));
+        if (choixQuais > 0) {
+            return quaisDisponibles.get(choixQuais);
+        }
+        return null;
     }
     
 }

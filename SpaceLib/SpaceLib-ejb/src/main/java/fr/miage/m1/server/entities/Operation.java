@@ -6,6 +6,7 @@
 package fr.miage.m1.server.entities;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,6 +27,7 @@ public class Operation implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(columnDefinition="VARCHAR(1000)")
     private String operation;
 
     @ManyToOne

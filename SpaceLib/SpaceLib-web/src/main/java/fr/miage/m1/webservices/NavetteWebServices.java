@@ -56,14 +56,15 @@ public class NavetteWebServices {
     }
 
     @WebMethod(operationName = "recupererInformationsRevisions")
-    public List<String> recupererInformationsRevisions(@WebParam(name = "identifiant") String identifiant, @WebParam(name = "token") String token) 
+    public List<String> recupererInformationsRevisions(@WebParam(name = "identifiant") String identifiant, @WebParam(name = "token") String token,
+                                                       @WebParam(name = "stationAttache") String stationAttache) 
                         throws TokenInvalideException, RoleInvalideException {
         String[] infosCompte;
         
         infosCompte = new String[2];
         infosCompte[0] = identifiant;
         infosCompte[1] = token;
-        return ejbRef.recupererInformationsRevisions(infosCompte);
+        return ejbRef.recupererInformationsRevisions(infosCompte, stationAttache);
     }
     
     @WebMethod(operationName = "ajouterNavette")

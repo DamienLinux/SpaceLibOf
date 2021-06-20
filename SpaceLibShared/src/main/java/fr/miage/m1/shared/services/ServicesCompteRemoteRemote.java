@@ -26,4 +26,6 @@ public interface ServicesCompteRemoteRemote {
     
     public void renseignerStationRattachement(String[] infosCompte, String nomStation) 
                 throws TokenInvalideException, StationInexistanteException;
+    
+    public String reservationEnCours(String[] infosCompte);
 }
