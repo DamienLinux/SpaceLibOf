@@ -32,7 +32,14 @@ public interface ServicesNavetteRemoteRemote {
     
     public void annule(String[] infosCompte, String idReservation) throws TokenInvalideException, IdReservationIncorrecteException, MauvaisUtilisateurReservationException;
     
-    public void reserve(String[] infosCompte, String stationAttachement, String destination, 
+    public Long reserve(String[] infosCompte, String stationAttachement, String destination, 
+                        String dateDepart, int nbPassagers)
+                throws TokenInvalideException, AucuneDestinationException, 
+                       QuaiIndisponibleException, StationInexistanteException, 
+                       NavettesIndisponibleException, ParseException,
+                       DestinationIncorrecteException, NavettePassagersException;
+    
+    public void utiliseNavette(String[] infosCompte, String destination, 
                         String dateDepart, int nbPassagers)
                 throws TokenInvalideException, AucuneDestinationException, 
                        QuaiIndisponibleException, StationInexistanteException, 
