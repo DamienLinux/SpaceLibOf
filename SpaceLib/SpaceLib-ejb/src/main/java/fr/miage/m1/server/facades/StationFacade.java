@@ -8,6 +8,7 @@ package fr.miage.m1.server.facades;
 import fr.miage.m1.server.entities.Navette;
 import fr.miage.m1.server.entities.Quai;
 import fr.miage.m1.server.entities.Station;
+import fr.miage.m1.server.entities.Voyage;
 import java.util.ArrayList;
 import javax.ejb.Stateless;
 import java.util.List;
@@ -66,11 +67,15 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
     public Navette findNavetteDisponible(Station station) {
         List<Navette> navettesDisponibles;
         int choixNavette;
+        List<Voyage> voyages;
         
         navettesDisponibles = new ArrayList<Navette>();
         for (int i = 0 ; i < station.getQuais().size() ; i++) {
             if (station.getQuais().get(i).getNavette() != null) {
-                navettesDisponibles.add(station.getQuais().get(i).getNavette());
+                voyages = station.getQuais().get(i).getNavette().getVoyages();
+                if (voyages == null || voyages.size() <= 0 || !voyages.get((voyages.size() - 1)).isEnCours()) {
+                    navettesDisponibles.add(station.getQuais().get(i).getNavette());
+                }
             }
         }
         /* Retourne une des navettes aléatoirement */

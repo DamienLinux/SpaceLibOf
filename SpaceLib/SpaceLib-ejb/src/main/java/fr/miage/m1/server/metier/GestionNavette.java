@@ -290,8 +290,6 @@ public class GestionNavette implements GestionNavetteLocal {
         Station stationActuelle;
         Voyage voyage;
         List<Voyage> voyages;
-        String operation;
-        Operation operationAjoute;
         String dateArrivee;
 
         compte = compteFacade.verificationAcces(infosCompte);
