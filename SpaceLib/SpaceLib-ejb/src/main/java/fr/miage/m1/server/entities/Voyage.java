@@ -25,7 +25,7 @@ public class Voyage implements Serializable {
     
     private boolean enCours = true;
     
-    public Date dateDepart = new Date();
+    public Date dateDepart;
     
     public int nbPassagers;
 
@@ -46,10 +46,11 @@ public class Voyage implements Serializable {
     public Voyage() {
     }
     
-    public Voyage(Navette navette, Quai depart, Quai destination, Date dateArriveePrevue, int nbPassagers) {
+    public Voyage(Navette navette, Quai depart, Quai destination, Date dateDepart, Date dateArriveePrevue, int nbPassagers) {
         this.navette = navette;
         this.depart = depart;
         this.destination = destination;
+        this.dateDepart = dateDepart;
         this.dateArriveePrevue = dateArriveePrevue;
         this.nbPassagers = nbPassagers;
     }

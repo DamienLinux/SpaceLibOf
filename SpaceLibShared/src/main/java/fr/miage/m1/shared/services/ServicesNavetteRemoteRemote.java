@@ -28,7 +28,7 @@ public interface ServicesNavetteRemoteRemote {
                 throws TokenInvalideException ;
     
     public void reserve(String[] infosCompte, String stationAttachement, String destination, 
-                        String dateArrivee, int nbPassagers)
+                        String dateDepart, int nbPassagers)
                 throws TokenInvalideException, AucuneDestinationException, 
                        QuaiIndisponibleException, StationInexistanteException, 
                        NavettesIndisponibleException, ParseException,

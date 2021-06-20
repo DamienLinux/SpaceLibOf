@@ -37,13 +37,14 @@ public class VoyageFacade extends AbstractFacade<Voyage> implements VoyageFacade
     public VoyageFacade() {
         super(Voyage.class);
     }
+   
 
     @Override
-    public Voyage creerVoyage(Navette navette, Quai quaiDepart, Quai quaiDestination, String dateArriveePrevu,
+    public Voyage creerVoyage(Navette navette, Quai quaiDepart, Quai quaiDestination, String dateDepart, String dateArriveePrevu,
                               int nbPassagers) 
                   throws ParseException {
         Voyage voyage;
-        voyage = new Voyage(navette, quaiDepart, quaiDestination, 
+        voyage = new Voyage(navette, quaiDepart, quaiDestination, new SimpleDateFormat("dd/MM/yyy").parse(dateDepart),
                             new SimpleDateFormat("dd/MM/yyy").parse(dateArriveePrevu), nbPassagers);
         create(voyage);
         return voyage;

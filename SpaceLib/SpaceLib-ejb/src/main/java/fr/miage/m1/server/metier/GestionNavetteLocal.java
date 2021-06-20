@@ -7,6 +7,8 @@ package fr.miage.m1.server.metier;
 
 import fr.miage.m1.shared.exceptions.AucuneDestinationException;
 import fr.miage.m1.shared.exceptions.DestinationIncorrecteException;
+import fr.miage.m1.shared.exceptions.IdReservationIncorrecteException;
+import fr.miage.m1.shared.exceptions.MauvaisUtilisateurReservationException;
 import fr.miage.m1.shared.exceptions.NavetteExistanteException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePasAReviserException;
@@ -29,7 +31,7 @@ import javax.ejb.Local;
 @Local
 public interface GestionNavetteLocal {
     public void reserve(String[] infosCompte, String stationAttachement, String destination, 
-                        String dateArrivee, int nbPassagers)
+                        String dateDepart, int nbPassagers)
                 throws TokenInvalideException, AucuneDestinationException, 
                        QuaiIndisponibleException, StationInexistanteException, 
                        NavettesIndisponibleException, ParseException,
@@ -53,4 +55,6 @@ public interface GestionNavetteLocal {
                 throws TokenInvalideException, RoleInvalideException, 
                        NavetteExistanteException, QuaiIndisponibleException,
                        StationInexistanteException;
+
+    public void annule(String[] infosCompte, String idReservation) throws TokenInvalideException, IdReservationIncorrecteException, MauvaisUtilisateurReservationException;
 }

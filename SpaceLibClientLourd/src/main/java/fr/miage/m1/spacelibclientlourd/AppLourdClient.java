@@ -167,7 +167,7 @@ public class AppLourdClient {
     public void reserverVoyage() {
         ListeChoix liste;
         String stationDestination,
-               dateArrivee;
+               dateDepart;
         ConsoleVoyage console;
         boolean valide;
         int nbPassagers;
@@ -180,10 +180,10 @@ public class AppLourdClient {
             do {
                 valide = true;
                 stationDestination = console.saisieVoyage(liste);
-                dateArrivee = console.saisieDateArrivee();
+                dateDepart = console.saisieDateArrivee();
                 nbPassagers = console.saisieNbPassagers();
                 try {
-                    navetteRMIService.getServiceNavetteRemote().reserve(infosCompte(), stationRattachement, stationDestination, dateArrivee, nbPassagers);
+                    navetteRMIService.getServiceNavetteRemote().reserve(infosCompte(), stationRattachement, stationDestination, dateDepart, nbPassagers);
                 } catch (TokenInvalideException ex) {
                     valide = false;
                     System.out.println(ERREUR_ACCES_NON_AUTORISE);

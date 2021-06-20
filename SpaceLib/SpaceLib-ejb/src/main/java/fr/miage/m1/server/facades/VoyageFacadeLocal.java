@@ -33,7 +33,7 @@ public interface VoyageFacadeLocal {
 
     int count();
     
-    public Voyage creerVoyage(Navette navette, Quai quaiDepart, Quai quaiDestination, String dateArriveePrevu,
+    public Voyage creerVoyage(Navette navette, Quai quaiDepart, Quai quaiDestination, String dateDepart, String dateArriveePrevu,
                               int nbPassagers)  
                   throws ParseException;
     

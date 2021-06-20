@@ -93,6 +93,9 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
             }
         }
         /* Retourne un quais aléatoirement */
+        for (Quai quai : quaisDisponibles) {
+            System.out.println("zouiz " + quai.toString());
+        }
         choixQuais = (int) (Math.random() * (quaisDisponibles.size() - 1));
         if (choixQuais > 0) {
             return quaisDisponibles.get(choixQuais);
