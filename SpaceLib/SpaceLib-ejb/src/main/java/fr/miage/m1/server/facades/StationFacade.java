@@ -75,7 +75,7 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
         }
         /* Retourne une des navettes aléatoirement */
         choixNavette = (int) (Math.random() * (navettesDisponibles.size() - 1));
-        if (choixNavette >= 0) {
+        if (choixNavette >= 0 && navettesDisponibles.size() > 0) {
             return navettesDisponibles.get(choixNavette);
         }
         return null;
