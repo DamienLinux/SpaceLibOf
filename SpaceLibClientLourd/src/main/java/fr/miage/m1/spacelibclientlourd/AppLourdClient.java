@@ -9,7 +9,9 @@ import fr.miage.m1.shared.exceptions.AucuneDestinationException;
 import fr.miage.m1.shared.exceptions.AuthentificationException;
 import fr.miage.m1.shared.exceptions.CompteInexistantException;
 import fr.miage.m1.shared.exceptions.DestinationIncorrecteException;
+import fr.miage.m1.shared.exceptions.IdReservationIncorrecteException;
 import fr.miage.m1.shared.exceptions.IdentifiantExistantException;
+import fr.miage.m1.shared.exceptions.MauvaisUtilisateurReservationException;
 import fr.miage.m1.shared.exceptions.MotDePasseInvalideException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePassagersException;
@@ -41,7 +43,8 @@ public class AppLourdClient {
                                                 + " 1 - Réserver un voyage\n"
                                                 + " 2 - Visualiser la carte\n"
                                                 + " 3 - Se déconnecter\n"
-                                                + " 4 - Quitter\n"
+                                                + " 4 - Annuler une réservation\n"
+                                                + " 5 - Quitter\n"
                                                 + "#------------------------------------------------\n"
                                                 + "Quelle option choisissez-vous ? : ";
     
@@ -66,6 +69,10 @@ public class AppLourdClient {
     private final String ERREUR_RESERVATION_EFFECTUE = "Vous avez déjà effectué une réservation.";
     
     private final String ERREUR_PASSAGERS_NAVETTE = "Il n'y a pas assez de place sur cette navette.";
+    
+    private final String ERREUR_ID_RESERVATION_INCORRECTE = "L'ID de réservation est incorrecte.";
+
+    private final String ERREUR_RESERVATION_MAUVAIS_UTILISATEUR = "Cette réservation ne vous appartient pas.";
     
     private ServiceClient service;
     
@@ -247,6 +254,21 @@ public class AppLourdClient {
         
     }
     
+    public void annulerReservation() {
+        ConsoleVoyage console = new ConsoleVoyage(service);
+        String id = console.saisieIdReservation();
+        
+        try {
+        navetteRMIService.getServiceNavetteRemote().annule(infosCompte(), id);
+        } catch (TokenInvalideException ex) {
+            System.out.println(ERREUR_ACCES_NON_AUTORISE);
+        } catch (IdReservationIncorrecteException ex) {
+            System.out.println(ERREUR_ID_RESERVATION_INCORRECTE);
+        } catch (MauvaisUtilisateurReservationException ex) {
+            System.out.println(ERREUR_RESERVATION_MAUVAIS_UTILISATEUR);
+        }
+    }
+    
     public void deconnexion() {
         token = null;
         System.out.println("Vous êtes maintenant déconnecté.");
@@ -259,20 +281,23 @@ public class AppLourdClient {
         executionEnCours = true;
         do {
             if (token != null) {
-                choix = service.saisieNombre(TEXTE_MENU_CONNECTE, 1, 4);
+                choix = service.saisieNombre(TEXTE_MENU_CONNECTE, 1, 5);
                 switch (choix) {
                 case 1:
                     System.out.println("Réservation d'un voyage.");
                     reserverVoyage();
                     break;
                 case 2:
-                    System.out.println("Accès à la carte");
+                    System.out.println("Accès à la carte.");
                     visualiserCarte();
                     break;
                 case 3:
                     System.out.println("Déconnexion.");
                     deconnexion();
                     break;
+                case 4:
+                    System.out.println("Annulation.");
+                    
                 default:
                     executionEnCours = false;
                     System.out.println("Merci d'avoir utilisé nos services.");
