@@ -134,7 +134,7 @@ public class GestionNavette implements GestionNavetteLocal {
     }
 
     private String calculDateArrivee(String dateDepart, String stationDepart, String stationDestination) {
-
+        
         return "20/06/2021";
     }
 
@@ -181,9 +181,9 @@ public class GestionNavette implements GestionNavetteLocal {
         navetteUtilise.setCompte(compte);
         compte.setNavette(navetteUtilise);
         dateArrivee = calculDateArrivee(dateDepart, stationAttachement, destination);
-        voyage = voyageFacade.creerVoyage(navetteUtilise, quaiFacade.findByNavette(navetteUtilise), quaiDestination, dateDepart, dateArrivee, nbPassagers);
+        voyage = voyageFacade.creerVoyage(navetteUtilise, navetteUtilise.getQuai(), quaiDestination, dateDepart, dateArrivee, nbPassagers);
         navetteFacade.ajouterVoyage(navetteUtilise, voyage);
-        quaiFacade.ajouterVoyage(quaiFacade.findByNavette(navetteUtilise), quaiDestination, voyage);
+        quaiFacade.ajouterVoyage(navetteUtilise.getQuai(), quaiDestination, voyage);
         operation = VOYAGE_INITIE + " Date de départ : " + dateDepart
                 + " - Date d'arrivée prévue : " + dateArrivee
                 + " - ID de la station de départ : " + stationActuelle.getId()

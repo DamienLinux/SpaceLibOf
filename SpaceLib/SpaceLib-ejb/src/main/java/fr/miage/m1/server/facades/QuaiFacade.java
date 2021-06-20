@@ -76,7 +76,6 @@ public class QuaiFacade extends AbstractFacade<Quai> implements QuaiFacadeLocal 
     public void ajouterVoyage(Quai depart, Quai destination, Voyage voyage) {
         depart.ajouterVoyagesDepart(voyage);
         destination.ajouterVoyagesADestination(voyage);
-        depart.setNavette(null); // La Navette quitte le quai
         edit(depart);
         edit(destination);
     }

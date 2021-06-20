@@ -107,7 +107,6 @@ public class NavetteFacade extends AbstractFacade<Navette> implements NavetteFac
     @Override
     public void ajouterVoyage(Navette navette, Voyage voyage) {
         navette.ajouterVoyage(voyage);
-        navette.setQuai(null); // La Navette quitte le quai
         edit(navette);
     }
 }
