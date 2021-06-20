@@ -16,6 +16,7 @@ import fr.miage.m1.shared.exceptions.NavettePassagersException;
 import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
 import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.ReservationExistanteException;
+import fr.miage.m1.shared.exceptions.ReservationInexistanteException;
 import fr.miage.m1.shared.exceptions.RevisionInexistanteException;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
@@ -56,5 +57,9 @@ public interface GestionNavetteLocal {
                        NavetteExistanteException, QuaiIndisponibleException,
                        StationInexistanteException;
 
-    public void annule(String[] infosCompte, String idReservation) throws TokenInvalideException, IdReservationIncorrecteException, MauvaisUtilisateurReservationException;
+    public void annule(String[] infosCompte, String idReservation) 
+                throws TokenInvalideException, IdReservationIncorrecteException, MauvaisUtilisateurReservationException;
+    
+    public void debutVoyageReserve(String[] infosCompte)
+                throws TokenInvalideException, ReservationInexistanteException;
 }

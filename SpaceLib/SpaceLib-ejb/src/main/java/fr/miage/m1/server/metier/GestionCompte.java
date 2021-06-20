@@ -115,7 +115,22 @@ public class GestionCompte implements GestionCompteLocal {
         compte = compteFacade.findCompteByIdentifiant(infosCompte[0]);
         if (compte != null) {
             voyage = voyageFacade.findByNavette(compte.getNavette());
-            if (voyage != null && voyage.isEnCours()) {
+            if (voyage != null && voyage.isEnCours() && voyage.getNavette().getQuai() != null) {
+                return voyage.getDepart().getStation().getNom();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String voyageEnCours(String[] infosCompte) {
+        Compte compte;
+        Voyage voyage;
+        
+        compte = compteFacade.findCompteByIdentifiant(infosCompte[0]);
+        if (compte != null) {
+            voyage = voyageFacade.findByNavette(compte.getNavette());
+            if (voyage != null && voyage.isEnCours() && voyage.getNavette().getQuai() == null) {
                 return voyage.getDestination().getStation().getNom();
             }
         }

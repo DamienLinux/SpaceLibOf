@@ -15,9 +15,11 @@ import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePassagersException;
 import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
 import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
+import fr.miage.m1.shared.exceptions.ReservationInexistanteException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,6 +69,8 @@ public class AppLourdClient {
     
     private final String ERREUR_PASSAGERS_NAVETTE = "Il n'y a pas assez de place sur cette navette.";
     
+    private final String ERREUR_RESERVATION_EXISTANTE = "Il semblerait que vous n'ayez en fait aucune réservation.";
+    
     private ServiceClient service;
     
     private RMICompteServiceManager compteRMIService;
@@ -82,6 +86,8 @@ public class AppLourdClient {
     private String stationRattachement;
     
     boolean voyageEnCours;
+    
+    boolean reservationEnCours;
     
     public AppLourdClient() throws NamingException {
         service = new ServiceClient();
@@ -113,11 +119,50 @@ public class AppLourdClient {
         System.out.println("Bienvenue sur votre espace de connexion " + identifiant + " !");
         indicationStationRattachement();
         rechercheReservationEnCours();
+        if (!reservationEnCours) {
+            rechercheVoyageEnCours();
+        }
     }
     
     public void rechercheReservationEnCours() {
+        String depart;
+        depart = compteRMIService.getServiceCompteRemote().reservationEnCours(infosCompte());
+        reservationEnCours = (depart != null);
+        if (reservationEnCours && depart.equals(stationRattachement)) {
+            System.out.println("Vous avez une réservation pour " + stationRattachement + " !");
+            choixDepart();
+        }
+    }
+    
+    public void choixDepart() {
+        String reponse;
+        String[] choix = {"Oui", "Non"};
+        boolean valide = true;
+        
+        reponse = service.saisieTexte("Voulez-vous partir ? (Oui/Non)", choix);
+        if (reponse.equals("Oui")) {
+            try {
+                navetteRMIService.getServiceNavetteRemote().debutVoyageReserve(infosCompte());
+            } catch (TokenInvalideException ex) {
+                valide = false;
+                System.out.println(ERREUR_ACCES_NON_AUTORISE);
+            } catch (ReservationInexistanteException ex) {
+                valide = false;
+                System.out.println(ERREUR_RESERVATION_EXISTANTE);
+            }
+            if (valide) {
+                System.out.println("Bon voyage !");
+                reservationEnCours = false;
+                voyageEnCours = true;
+            }
+        } else {
+            System.out.println("Vous avez toujours une réservation d'actif.");
+        }
+    }
+    
+    public void rechercheVoyageEnCours() {
         String destination;
-        destination = compteRMIService.getServiceCompteRemote().reservationEnCours(infosCompte());
+        destination = compteRMIService.getServiceCompteRemote().voyageEnCours(infosCompte());
         voyageEnCours = (destination != null);
         if (voyageEnCours && destination.equals(stationRattachement)) {
             System.out.println("Vous êtes bien arrivé sur la station " + stationRattachement + " !");
@@ -172,7 +217,7 @@ public class AppLourdClient {
         boolean valide;
         int nbPassagers;
         
-        if (voyageEnCours) {
+        if (reservationEnCours || voyageEnCours) {
             System.out.println(ERREUR_RESERVATION_EFFECTUE);
         } else {
             console = new ConsoleVoyage(service);
@@ -208,7 +253,8 @@ public class AppLourdClient {
                     System.out.println(ERREUR_PASSAGERS_NAVETTE);
                 }
             } while (!valide);
-            voyageEnCours = true;
+            reservationEnCours = true;
+            System.out.println("Réservation effectué.");
         }
     }
     
@@ -238,7 +284,6 @@ public class AppLourdClient {
     }
     
     public void visualiserCarte() {
-        
         try {
             System.out.println(stationRMIService.getServiceStationRemote().carteStations());
         } catch (TokenInvalideException ex) {

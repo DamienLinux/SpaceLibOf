@@ -75,7 +75,7 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
         }
         /* Retourne une des navettes aléatoirement */
         choixNavette = (int) (Math.random() * (navettesDisponibles.size() - 1));
-        if (choixNavette > 0) {
+        if (choixNavette >= 0) {
             return navettesDisponibles.get(choixNavette);
         }
         return null;
@@ -91,10 +91,6 @@ public class StationFacade extends AbstractFacade<Station> implements StationFac
             if (station.getQuais().get(i).getNavette() == null) {
                 quaisDisponibles.add(station.getQuais().get(i));
             }
-        }
-        /* Retourne un quais aléatoirement */
-        for (Quai quai : quaisDisponibles) {
-            System.out.println("zouiz " + quai.toString());
         }
         choixQuais = (int) (Math.random() * (quaisDisponibles.size() - 1));
         if (choixQuais > 0) {

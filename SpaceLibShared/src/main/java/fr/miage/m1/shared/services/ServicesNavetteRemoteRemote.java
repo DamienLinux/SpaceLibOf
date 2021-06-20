@@ -12,6 +12,7 @@ import fr.miage.m1.shared.exceptions.NavettePassagersException;
 import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
 import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.ReservationExistanteException;
+import fr.miage.m1.shared.exceptions.ReservationInexistanteException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
 import java.text.ParseException;
@@ -33,4 +34,7 @@ public interface ServicesNavetteRemoteRemote {
                        QuaiIndisponibleException, StationInexistanteException, 
                        NavettesIndisponibleException, ParseException,
                        DestinationIncorrecteException, NavettePassagersException;
+    
+    public void debutVoyageReserve(String[] infosCompte)
+                throws TokenInvalideException, ReservationInexistanteException;
 }

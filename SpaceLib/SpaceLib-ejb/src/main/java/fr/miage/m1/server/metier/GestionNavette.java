@@ -29,6 +29,7 @@ import fr.miage.m1.shared.exceptions.NavettePasAReviserException;
 import fr.miage.m1.shared.exceptions.NavettePassagersException;
 import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
 import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
+import fr.miage.m1.shared.exceptions.ReservationInexistanteException;
 import fr.miage.m1.shared.exceptions.RevisionInexistanteException;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
@@ -104,6 +105,8 @@ public class GestionNavette implements GestionNavetteLocal {
     private final String ERREUR_ID_RESERVATION_INCORRECTE = "Erreur 16 : L'ID de réservation est incorrecte.";
 
     private final String ERREUR_RESERVATION_MAUVAIS_UTILISATEUR = "Erreur 17 : Cette réservation ne vous appartient pas.";
+    
+    public final String ERREUR_RESERVATION_INEXISTANTE = "Erreur 18 : Aucune réservation n'a été effectué pour ce compte.";
 
     @Override
     public void annule(String[] infosCompte, String idReservation) throws TokenInvalideException, IdReservationIncorrecteException, MauvaisUtilisateurReservationException {
@@ -151,6 +154,7 @@ public class GestionNavette implements GestionNavetteLocal {
         Station stationDestination;
         Station stationActuelle;
         Voyage voyage;
+        List<Voyage> voyages;
         String operation;
         Operation operationAjoute;
         String dateArrivee;
@@ -169,6 +173,10 @@ public class GestionNavette implements GestionNavetteLocal {
         }
         navetteUtilise = stationFacade.findNavetteDisponible(stationActuelle);
         if (navetteUtilise == null) {
+            throw new NavettesIndisponibleException(ERREUR_NAVETTES_INDISPONIBLE);
+        }
+        voyages = navetteUtilise.getVoyages();
+        if (voyages != null && voyages.size() > 0 && voyages.get((voyages.size() - 1)).isEnCours()) {
             throw new NavettesIndisponibleException(ERREUR_NAVETTES_INDISPONIBLE);
         }
         quaiDestination = stationFacade.findQuaiDisponible(stationDestination);
@@ -198,6 +206,7 @@ public class GestionNavette implements GestionNavetteLocal {
         navetteFacade.edit(navetteUtilise);
         compteFacade.edit(compte);
     }
+
 
     @Override
     public void voyageAcheve(String[] infosCompte)
@@ -339,8 +348,8 @@ public class GestionNavette implements GestionNavetteLocal {
         navettes = navetteFacade.listNavettesAReviser();
         nomsNavettes = new ArrayList<String>();
         for (int i = 0; i < navettes.size(); i++) {
-            quai = quaiFacade.findByNavette(navettes.get(i));
-            if (quai != null && quai.getStation().getNom() == stationAttache) {
+            quai = navettes.get(i).getQuai();
+            if (quai != null && quai.getStation().getNom().equals(stationAttache)) {
                 nomsNavettes.add(navettes.get(i).getNom());
             }
         }
@@ -374,5 +383,30 @@ public class GestionNavette implements GestionNavetteLocal {
         navetteAjoutee = navetteFacade.ajouterNavette(navette, nbPassagers, quai);
         quai.setNavette(navetteAjoutee);
         quaiFacade.edit(quai);
+    }
+
+    @Override
+    public void debutVoyageReserve(String[] infosCompte)
+                throws TokenInvalideException, ReservationInexistanteException {
+        Compte compte;
+        List<Voyage> voyages;
+        Quai quaiDepart;
+        Navette navette;
+        
+        compte = compteFacade.verificationAcces(infosCompte);
+        navette = compte.getNavette();
+        if (navette == null) {
+            throw new ReservationInexistanteException(ERREUR_RESERVATION_INEXISTANTE);
+        }
+        voyages = navette.getVoyages();
+        if (voyages != null && voyages.size() > 0 && !voyages.get((voyages.size() - 1)).isEnCours()) {
+            throw new ReservationInexistanteException(ERREUR_RESERVATION_INEXISTANTE);
+        }
+        quaiDepart = navette.getQuai();
+        /* La navette quitte le quais */
+        quaiDepart.setNavette(null);
+        navette.setQuai(null);
+        quaiFacade.edit(quaiDepart);
+        navetteFacade.edit(navette);
     }
 }

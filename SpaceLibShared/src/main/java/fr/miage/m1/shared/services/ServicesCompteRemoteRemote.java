@@ -28,4 +28,6 @@ public interface ServicesCompteRemoteRemote {
                 throws TokenInvalideException, StationInexistanteException;
     
     public String reservationEnCours(String[] infosCompte);
+    
+    public String voyageEnCours(String[] infosCompte);
 }

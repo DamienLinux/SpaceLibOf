@@ -50,4 +50,9 @@ public class ServicesCompteRemote implements ServicesCompteRemoteRemote {
     public String reservationEnCours(String[] infosCompte) {
         return gestionCompte.reservationEnCours(infosCompte);
     }
+
+    @Override
+    public String voyageEnCours(String[] infosCompte) {
+        return gestionCompte.voyageEnCours(infosCompte);
+    }
 }

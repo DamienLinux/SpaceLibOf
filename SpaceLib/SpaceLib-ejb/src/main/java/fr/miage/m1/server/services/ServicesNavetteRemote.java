@@ -13,6 +13,7 @@ import fr.miage.m1.shared.exceptions.NavettePassagersException;
 import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
 import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.ReservationExistanteException;
+import fr.miage.m1.shared.exceptions.ReservationInexistanteException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
 import fr.miage.m1.shared.services.ServicesNavetteRemoteRemote;
@@ -47,5 +48,11 @@ public class ServicesNavetteRemote implements ServicesNavetteRemoteRemote {
                        NavettesIndisponibleException, ParseException,
                        DestinationIncorrecteException, NavettePassagersException {
         gestionNavette.reserve(infosCompte, stationAttachement, destination, dateDepart, nbPassagers);
+    }
+
+    @Override
+    public void debutVoyageReserve(String[] infosCompte) 
+                throws TokenInvalideException, ReservationInexistanteException {
+        gestionNavette.debutVoyageReserve(infosCompte);
     }
 }

@@ -31,7 +31,7 @@ public class ConsoleVoyage {
         int annee,
             mois;
 
-        System.out.println("Saisissez la date d'arrivée : ");
+        System.out.println("Saisissez la date de départ : ");
         annee = saisieAnnee();
         mois = saisieMois();
         return (saisieJour(annee, mois) + "/" + mois + "/" + annee);
