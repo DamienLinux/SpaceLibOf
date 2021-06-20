@@ -34,13 +34,18 @@ import fr.miage.m1.shared.exceptions.RevisionInexistanteException;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -105,13 +110,13 @@ public class GestionNavette implements GestionNavetteLocal {
     private final String ERREUR_ID_RESERVATION_INCORRECTE = "Erreur 16 : L'ID de réservation est incorrecte.";
 
     private final String ERREUR_RESERVATION_MAUVAIS_UTILISATEUR = "Erreur 17 : Cette réservation ne vous appartient pas.";
-    
+
     public final String ERREUR_RESERVATION_INEXISTANTE = "Erreur 18 : Aucune réservation n'a été effectué pour ce compte.";
 
     @Override
-    public void annule(String[] infosCompte, String idReservation) 
-                throws TokenInvalideException, IdReservationIncorrecteException, 
-                       MauvaisUtilisateurReservationException {
+    public void annule(String[] infosCompte, String idReservation)
+            throws TokenInvalideException, IdReservationIncorrecteException,
+            MauvaisUtilisateurReservationException {
         Compte compte = compteFacade.verificationAcces(infosCompte);
         Voyage voyage = voyageFacade.find(idReservation);
         String operation;
@@ -136,12 +141,139 @@ public class GestionNavette implements GestionNavetteLocal {
         compteFacade.edit(compte);
         navetteFacade.edit(navette);
         voyageFacade.remove(voyage);
-        
+
     }
 
     private String calculDateArrivee(String dateDepart, String stationDepart, String stationDestination) {
-        
-        return "20/06/2021";
+        try {
+            Date dateD = new SimpleDateFormat("dd/MM/yyyy").parse(dateDepart);
+            Calendar c = Calendar.getInstance();
+            c.setTime(dateD);
+
+            switch (stationDepart) {
+                case "Terre":
+                    switch (stationDestination) {
+                        case "Dimidium":
+                            c.add(Calendar.DATE, 2);
+                            break;
+                        case "Arion":
+                            c.add(Calendar.DATE, 6);
+                            break;
+                        case "Brahe":
+                            c.add(Calendar.DATE, 2);
+                            break;
+                        case "Amateru":
+                            c.add(Calendar.DATE, 4);
+                            break;
+                        case "Tadmor":
+                            c.add(Calendar.DATE, 2);
+                            break;
+                    }
+                    break;
+                case "Dimidium":
+                    switch (stationDestination) {
+                        case "Terre":
+                            c.add(Calendar.DATE, 2);
+                            break;
+                        case "Arion":
+                            c.add(Calendar.DATE, 6);
+                            break;
+                        case "Brahe":
+                            c.add(Calendar.DATE, 4);
+                            break;
+                        case "Amateru":
+                            c.add(Calendar.DATE, 6);
+                            break;
+                        case "Tadmor":
+                            c.add(Calendar.DATE, 4);
+                            break;
+                    }
+                    break;
+                case "Arion":
+                    switch (stationDestination) {
+                        case "Terre":
+                            c.add(Calendar.DATE, 6);
+                            break;
+                        case "Dimidium":
+                            c.add(Calendar.DATE, 6);
+                            break;
+                        case "Brahe":
+                            c.add(Calendar.DATE, 6);
+                            break;
+                        case "Amateru":
+                            c.add(Calendar.DATE, 8);
+                            break;
+                        case "Tadmor":
+                            c.add(Calendar.DATE, 6);
+                            break;
+                    }
+                    break;
+                case "Brahe":
+                    switch (stationDestination) {
+                        case "Terre":
+                            c.add(Calendar.DATE, 2);
+                            break;
+                        case "Dimidium":
+                            c.add(Calendar.DATE, 4);
+                            break;
+                        case "Arion":
+                            c.add(Calendar.DATE, 6);
+                            break;
+                        case "Amateru":
+                            c.add(Calendar.DATE, 4);
+                            break;
+                        case "Tadmor":
+                            c.add(Calendar.DATE, 2);
+                            break;
+                    }
+                    break;
+                case "Amateru":
+                    switch (stationDestination) {
+                        case "Terre":
+                            c.add(Calendar.DATE, 4);
+                            break;
+                        case "Dimidium":
+                            c.add(Calendar.DATE, 6);
+                            break;
+                        case "Arion":
+                            c.add(Calendar.DATE, 8);
+                            break;
+                        case "Brahe":
+                            c.add(Calendar.DATE, 4);
+                            break;
+                        case "Tadmor":
+                            c.add(Calendar.DATE, 2);
+                            break;
+                    }
+                    break;
+                case "Tadmor":
+                    switch (stationDestination) {
+                        case "Terre":
+                            c.add(Calendar.DATE, 2);
+                            break;
+                        case "Dimidium":
+                            c.add(Calendar.DATE, 4);
+                            break;
+                        case "Arion":
+                            c.add(Calendar.DATE, 6);
+                            break;
+                        case "Brahe":
+                            c.add(Calendar.DATE, 2);
+                            break;
+                        case "Amateru":
+                            c.add(Calendar.DATE, 2);
+                            break;
+                    }
+                    break;
+            }
+
+            dateD = c.getTime();
+            DateFormat df = new SimpleDateFormat("dd/MM/yyy");
+            return df.format(dateD);
+        } catch (ParseException ex) {
+            Logger.getLogger(GestionNavette.class.getName()).log(Level.SEVERE, null, ex);
+            return dateDepart;
+        }
     }
 
     @Override
@@ -209,7 +341,6 @@ public class GestionNavette implements GestionNavetteLocal {
         navetteFacade.edit(navetteUtilise);
         compteFacade.edit(compte);
     }
-
 
     @Override
     public void voyageAcheve(String[] infosCompte)
@@ -390,12 +521,12 @@ public class GestionNavette implements GestionNavetteLocal {
 
     @Override
     public void debutVoyageReserve(String[] infosCompte)
-                throws TokenInvalideException, ReservationInexistanteException {
+            throws TokenInvalideException, ReservationInexistanteException {
         Compte compte;
         List<Voyage> voyages;
         Quai quaiDepart;
         Navette navette;
-        
+
         compte = compteFacade.verificationAcces(infosCompte);
         navette = compte.getNavette();
         if (navette == null) {
