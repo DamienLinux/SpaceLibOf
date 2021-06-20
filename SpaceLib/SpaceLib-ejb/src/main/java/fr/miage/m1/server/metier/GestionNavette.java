@@ -268,7 +268,7 @@ public class GestionNavette implements GestionNavetteLocal {
             }
 
             dateD = c.getTime();
-            DateFormat df = new SimpleDateFormat("dd/MM/yyy");
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
             return df.format(dateD);
         } catch (ParseException ex) {
             Logger.getLogger(GestionNavette.class.getName()).log(Level.SEVERE, null, ex);

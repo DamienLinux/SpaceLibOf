@@ -134,7 +134,6 @@ public class AppLourdClient {
         String depart;
         depart = compteRMIService.getServiceCompteRemote().reservationEnCours(infosCompte());
         reservationEnCours = (depart != null);
-        System.out.println("DEPART : " + depart);
         if (reservationEnCours && depart.equals(stationRattachement)) {
             System.out.println("Vous avez une réservation pour " + stationRattachement + " !");
             choixDepart();
@@ -274,8 +273,7 @@ public class AppLourdClient {
     
     public void utiliserNavette() {
         ListeChoix liste;
-        String stationDestination,
-               dateDepart;
+        String stationDestination;
         ConsoleVoyage console;
         boolean valide,
                 exit;
