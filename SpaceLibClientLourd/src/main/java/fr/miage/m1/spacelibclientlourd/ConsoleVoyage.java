@@ -22,6 +22,10 @@ public class ConsoleVoyage {
         this.service = service;
     }
     
+    
+    public String saisieIdReservation() {
+        return service.saisieTexte("Quelle est l'ID de votre réservation ?");
+    }
     public String saisieVoyage(ListeChoix liste) {
         liste.afficherListe();
         return liste.choixListe(service.saisieNombre("A quelle station souhaitez-vous vous rendre ? : ", 1, liste.getListe().size()));

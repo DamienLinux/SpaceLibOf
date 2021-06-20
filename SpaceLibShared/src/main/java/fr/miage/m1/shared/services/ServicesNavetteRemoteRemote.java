@@ -7,6 +7,8 @@ package fr.miage.m1.shared.services;
 
 import fr.miage.m1.shared.exceptions.AucuneDestinationException;
 import fr.miage.m1.shared.exceptions.DestinationIncorrecteException;
+import fr.miage.m1.shared.exceptions.IdReservationIncorrecteException;
+import fr.miage.m1.shared.exceptions.MauvaisUtilisateurReservationException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePassagersException;
 import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
@@ -27,6 +29,8 @@ import javax.ejb.Remote;
 public interface ServicesNavetteRemoteRemote {
     public void voyageAcheve(String[] infosCompte)
                 throws TokenInvalideException ;
+    
+    public void annule(String[] infosCompte, String idReservation) throws TokenInvalideException, IdReservationIncorrecteException, MauvaisUtilisateurReservationException;
     
     public void reserve(String[] infosCompte, String stationAttachement, String destination, 
                         String dateDepart, int nbPassagers)

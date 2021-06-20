@@ -39,5 +39,7 @@ public interface QuaiFacadeLocal {
     
     public void ajouterVoyage(Quai depart, Quai destination, Voyage voyage);
     
+    public void retirerVoyage(Quai depart, Quai destination, Voyage voyage);
+    
     public Quai findByNavette(Navette navette);
 }

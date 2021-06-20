@@ -129,11 +129,12 @@ public class GestionNavette implements GestionNavetteLocal {
         navette.ajouterOperation(operationAjoute);
         compte.ajouterOperation(operationAjoute);
 
-        voyageFacade.remove(voyage);
         navette.setCompte(null);
+        quaiFacade.retirerVoyage(voyage.getDepart(), voyage.getDestination(), voyage);
         compteFacade.edit(compte);
         navetteFacade.edit(navette);
-
+        voyageFacade.remove(voyage);
+        
     }
 
     private String calculDateArrivee(String dateDepart, String stationDepart, String stationDestination) {
