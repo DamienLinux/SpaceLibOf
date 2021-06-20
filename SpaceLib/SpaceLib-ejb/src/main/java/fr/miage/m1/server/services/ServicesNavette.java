@@ -6,14 +6,21 @@
 package fr.miage.m1.server.services;
 
 import fr.miage.m1.server.metier.GestionNavetteLocal;
+import fr.miage.m1.shared.exceptions.AucuneDestinationException;
+import fr.miage.m1.shared.exceptions.DestinationIncorrecteException;
+import fr.miage.m1.shared.exceptions.IdReservationIncorrecteException;
+import fr.miage.m1.shared.exceptions.MauvaisUtilisateurReservationException;
 import fr.miage.m1.shared.exceptions.NavetteExistanteException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePasAReviserException;
+import fr.miage.m1.shared.exceptions.NavettePassagersException;
+import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
 import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.RevisionInexistanteException;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
+import java.text.ParseException;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -57,4 +64,16 @@ public class ServicesNavette implements ServicesNavetteLocal {
                        StationInexistanteException {
         gestionNavette.ajouterNavette(infosCompte, navette, nbPassagers, station);
     }
+
+    @Override
+    public Long reserve(String[] infosCompte, String stationAttachement, String destination, String dateDepart, int nbPassagers) throws TokenInvalideException, AucuneDestinationException, QuaiIndisponibleException, StationInexistanteException, NavettesIndisponibleException, ParseException, DestinationIncorrecteException, NavettePassagersException {
+        return gestionNavette.reserve(infosCompte, stationAttachement, destination, dateDepart, nbPassagers);
+    }
+
+    @Override
+    public void annule(String[] infosCompte, String idReservation) throws TokenInvalideException, IdReservationIncorrecteException, MauvaisUtilisateurReservationException {
+        gestionNavette.annule(infosCompte, idReservation);
+    }
+    
+    
 }

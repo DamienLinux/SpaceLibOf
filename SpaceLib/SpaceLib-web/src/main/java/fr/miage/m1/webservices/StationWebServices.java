@@ -9,6 +9,7 @@ import fr.miage.m1.server.services.ServicesStationLocal;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationExistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -38,4 +39,8 @@ public class StationWebServices {
         ejbRef.ajouterStation(infosCompte, nom, localisation, nbQuais);
     }
     
+    @WebMethod(operationName = "carteStation")
+    public String carteStation() {
+        return ejbRef.carteStations();
+    }
 }

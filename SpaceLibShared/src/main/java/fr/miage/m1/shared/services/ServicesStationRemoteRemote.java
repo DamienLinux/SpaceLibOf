@@ -19,6 +19,5 @@ public interface ServicesStationRemoteRemote {
 
     public String carteStations() throws TokenInvalideException;
     
-     public List<String> listeStations(String stationRattachement);
-      
+     public List<String> listeStations(String stationRattachement); 
 }

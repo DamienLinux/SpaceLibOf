@@ -27,9 +27,8 @@ public class ServicesStationRemote implements ServicesStationRemoteRemote {
      
     
     @Override
-    public String carteStations() throws TokenInvalideException{
+    public String carteStations() throws TokenInvalideException {
         return gestionStation.carteStations();
-       
     }
 
     @Override

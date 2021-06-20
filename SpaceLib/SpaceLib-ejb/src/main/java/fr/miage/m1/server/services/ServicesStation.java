@@ -33,6 +33,7 @@ public class ServicesStation implements ServicesStationLocal {
         gestionStation.ajouterStation(infosCompte, nom, localisation, nbQuais);
     }
 
+    @Override
     public String carteStations() {
         return gestionStation.carteStations();
     }
