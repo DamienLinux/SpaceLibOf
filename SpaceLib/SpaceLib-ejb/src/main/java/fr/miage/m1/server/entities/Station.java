@@ -114,7 +114,8 @@ public class Station implements Serializable {
         for (int i = 0 ; i < quais.size() ; i++) {
             voyages = quais.get(i).getVoyagesADestination();
             if (quais.get(i).getNavette() == null 
-                && (voyages == null || voyages.get(voyages.size() - 1).isEnCours())) {
+                && (voyages == null || voyages.size() <= 0 
+                    || voyages.get(voyages.size() - 1).isEnCours())) {
                 nbQuaisDisponibles++;
             }
         }

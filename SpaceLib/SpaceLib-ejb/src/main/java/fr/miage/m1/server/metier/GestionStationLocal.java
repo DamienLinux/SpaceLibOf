@@ -24,4 +24,6 @@ public interface GestionStationLocal {
             RoleInvalideException;
 
     public String carteStations();
+    
+    public List<String> listeStations(String stationRattachement);
 }

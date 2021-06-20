@@ -68,4 +68,19 @@ public class GestionStation implements GestionStationLocal {
         station = stationFacade.creerStation(nom, localisation);
         stationFacade.edit(quaiFacade.creerQuais(station, nbQuais));
     }
+
+    @Override
+    public List<String> listeStations(String stationRattachement) {
+        List<Station> stations;
+        List<String> nomsStation;
+        
+        stations = stationFacade.findAll();
+        nomsStation = new ArrayList<String>();
+        for (Station station : stations) {
+            if (station.getNom() != stationRattachement) {
+                nomsStation.add(station.getNom());
+            }
+        }
+        return nomsStation;
+    }
 }

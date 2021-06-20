@@ -38,6 +38,7 @@ public class Navette implements Serializable {
     
     @OneToMany(mappedBy = "navette")
     private List<Revision> revisions;
+    
     @OneToMany(mappedBy = "navette")
     private List<Voyage> voyages;
 
@@ -47,7 +48,8 @@ public class Navette implements Serializable {
     @OneToMany(mappedBy = "navette")
     private List<Operation> operations;
 
-    @OneToOne
+    
+    @OneToOne(mappedBy = "navette")
     private Quai quai;
 
     public Navette() {

@@ -8,6 +8,7 @@ package fr.miage.m1.server.entities;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,8 +23,17 @@ import javax.persistence.OneToOne;
 @Entity
 public class Quai implements Serializable {
 
+     private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     
-    @OneToMany(mappedBy = "destination")
+    
+    
+    @OneToOne
+    private Navette navette;
+    
+    @OneToMany(mappedBy = "destination", fetch=FetchType.EAGER)
     private List<Voyage> voyagesADestination;
     
     @OneToMany(mappedBy = "depart")
@@ -31,6 +41,9 @@ public class Quai implements Serializable {
     
     @OneToMany(mappedBy = "quai")
     private List<Revision> revisions;
+    
+    @ManyToOne
+    private Station station;
 
     public List<Revision> getRevisions() {
         return revisions;
@@ -60,14 +73,6 @@ public class Quai implements Serializable {
         this.station = station;
     }
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    
-    @OneToOne(mappedBy = "quai")
-    private Navette navette;
-
     public Navette getNavette() {
         return navette;
     }
@@ -86,9 +91,6 @@ public class Quai implements Serializable {
 
     public Quai() {
     }
-    
-    @ManyToOne
-    private Station station;
 
     public Long getId() {
         return id;

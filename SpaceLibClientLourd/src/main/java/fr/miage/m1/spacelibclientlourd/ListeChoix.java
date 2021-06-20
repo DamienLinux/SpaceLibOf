@@ -13,6 +13,14 @@ import java.util.List;
  */
 public class ListeChoix {
     private List<String> liste;
+
+    public List<String> getListe() {
+        return liste;
+    }
+
+    public void setListe(List<String> liste) {
+        this.liste = liste;
+    }
     
     public ListeChoix(List<String> liste) {
         this.liste = liste;

@@ -20,18 +20,17 @@ import fr.miage.m1.server.facades.RevisionFacadeLocal;
 import fr.miage.m1.server.facades.StationFacadeLocal;
 import fr.miage.m1.server.facades.VoyageFacadeLocal;
 import fr.miage.m1.shared.exceptions.AucuneDestinationException;
+import fr.miage.m1.shared.exceptions.DestinationIncorrecteException;
 import fr.miage.m1.shared.exceptions.NavetteExistanteException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePasAReviserException;
 import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
 import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
-import fr.miage.m1.shared.exceptions.ReservationExistanteException;
 import fr.miage.m1.shared.exceptions.RevisionInexistanteException;
 import fr.miage.m1.shared.exceptions.RoleInvalideException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -79,7 +78,7 @@ public class GestionNavette implements GestionNavetteLocal {
     
     private final String FIN_REVISION = "Fin révision.";
     
-    private final String ERREUR_DEJA_RESERVER = "Erreur 6 : Une réservation a déjà eu lieu.";
+    private final String ERREUR_DESTINATION_INCORRECTE = "Erreur 6 : La station de destination est la même que celle de départ.";
     
     private final String ERREUR_DESTINATION_INEXISTANTE = "Erreur 7 : Aucune destination lors de la réservation.";
 
@@ -98,10 +97,10 @@ public class GestionNavette implements GestionNavetteLocal {
     @Override
     public void reserve(String[] infosCompte, String stationAttachement, String destination, 
                         String dateArrivee, int nbPassagers)
-                throws TokenInvalideException, NavetteInexistanteException,
-                       AucuneDestinationException, QuaiIndisponibleException,
-                       StationInexistanteException, NavettesIndisponibleException,
-                       ParseException {
+                throws TokenInvalideException, AucuneDestinationException, 
+                       QuaiIndisponibleException, StationInexistanteException, 
+                       NavettesIndisponibleException, ParseException,
+                       DestinationIncorrecteException {
         Quai quaiDestination;
         Compte compte;
         Navette navetteUtilise;
@@ -119,6 +118,9 @@ public class GestionNavette implements GestionNavetteLocal {
         stationDestination = stationFacade.findByName(destination);
         if (stationDestination == null) {
             throw new AucuneDestinationException(ERREUR_DESTINATION_INEXISTANTE);
+        }
+        if (stationDestination == stationActuelle) {
+            throw new DestinationIncorrecteException(ERREUR_DESTINATION_INCORRECTE);
         }
         navetteUtilise = stationFacade.findNavetteDisponible(stationActuelle);
         if (navetteUtilise == null) {
@@ -181,6 +183,7 @@ public class GestionNavette implements GestionNavetteLocal {
         operationAjoute = operationFacade.ajouterOperation(navetteUtilise, operation);
         navetteUtilise.ajouterOperation(operationAjoute);
         compte.ajouterOperation(operationAjoute);
+        voyage.setEnCours(false);
         if (navetteUtilise.getVoyages().size() % 3 == 0) {
             navetteUtilise.setaReviser(true);
             operation = REVISION_NECESSAIRE + " Identifiant de la station : " + quaiDestination.getStation().getId()
@@ -193,6 +196,7 @@ public class GestionNavette implements GestionNavetteLocal {
         navetteFacade.edit(navetteUtilise);
         quaiFacade.edit(quaiDepart);
         compteFacade.edit(compte);
+        voyageFacade.edit(voyage);
     }
 
     @Override
@@ -295,7 +299,6 @@ public class GestionNavette implements GestionNavetteLocal {
         
         rolesAutorises = new ArrayList<String>();
         rolesAutorises.add("Administrateur");
-        
         compteFacade.verificationAcces(infosCompte, rolesAutorises);
         if (navetteFacade.findByName(navette) != null) {
             throw new NavetteExistanteException(ERREUR_NAVETTE_EXISTANTE);

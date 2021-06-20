@@ -61,17 +61,26 @@ public class QuaiFacade extends AbstractFacade<Quai> implements QuaiFacadeLocal 
         query.where(
             build.and(
                 build.equal(root.get("station"), station),
-                build.equal(root.get("navette"), null)
+                build.isNull(root.get("navette"))
             )
         );
         quais = getEntityManager().createQuery(query).getResultList();
-        return quais.get(0);
+        if (quais != null && quais.size() > 0) {
+            for (int i = 0 ; i < quais.size() ; i++) {
+                System.out.println(" TEST 1-" + i + " : " + quais.get(i).getNavette());
+            }
+            return quais.get(0);
+        } //else
+        return null;
     }
 
     @Override
     public void ajouterVoyage(Quai depart, Quai destination, Voyage voyage) {
+        System.out.println("OUAIS MAIS C'EST PAS TOI QUI DECIDE");
         depart.ajouterVoyagesDepart(voyage);
+        System.out.println("TA GUEULE");
         destination.ajouterVoyagesADestination(voyage);
+        System.out.println("WTF");
         depart.setNavette(null); // La Navette quitte le quai
         edit(depart);
         edit(destination);

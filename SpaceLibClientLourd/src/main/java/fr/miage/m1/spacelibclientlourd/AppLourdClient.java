@@ -5,13 +5,18 @@
  */
 package fr.miage.m1.spacelibclientlourd;
 
+import fr.miage.m1.shared.exceptions.AucuneDestinationException;
 import fr.miage.m1.shared.exceptions.AuthentificationException;
 import fr.miage.m1.shared.exceptions.CompteInexistantException;
+import fr.miage.m1.shared.exceptions.DestinationIncorrecteException;
 import fr.miage.m1.shared.exceptions.IdentifiantExistantException;
 import fr.miage.m1.shared.exceptions.MotDePasseInvalideException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
+import fr.miage.m1.shared.exceptions.NavettesIndisponibleException;
+import fr.miage.m1.shared.exceptions.QuaiIndisponibleException;
 import fr.miage.m1.shared.exceptions.StationInexistanteException;
 import fr.miage.m1.shared.exceptions.TokenInvalideException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,12 +37,10 @@ public class AppLourdClient {
     
     
     private final String TEXTE_MENU_CONNECTE = "#------------------------------------------------\n"
-                                                + " 1 - Créer un compte\n"
-                                                + " 2 - Se connecter\n"
-                                                + " 3 - Réserver un voyage\n"
-                                                + " 4 - Indiquer son arrivé\n"
-                                                + " 5 - Visualiser la carte\n"
-                                                + " 6 - Quitter\n"
+                                                + " 1 - Réserver un voyage\n"
+                                                + " 2 - Visualiser la carte\n"
+                                                + " 3 - Se déconnecter\n"
+                                                + " 4 - Quitter\n"
                                                 + "#------------------------------------------------\n"
                                                 + "Quelle option choisissez-vous ? : ";
     
@@ -48,6 +51,16 @@ public class AppLourdClient {
     private final String ERREUR_ACCES_NON_AUTORISE = "Vous n'êtes pas autorisé à effectuer cette action.";
     
     private final String ERREUR_STATION_INEXISTANTE = "La station que vous avez mentionnée n'existe pas.";
+    
+    private final String ERREUR_DESTINATION_INEXISTANTE = "La destination que vous avez mentionnée n'existe pas.";
+    
+    private final String ERREUR_QUAI_INDISPONIBLE = "Aucun quai est disponible pour le moment sur la station que vous souhaitez rejoindre.";
+    
+    private final String ERREUR_NAVETTE_INDISPONIBLE = "Aucune navette ne peut vous prendre en charge sur cette station pour le moment.";
+    
+    private final String ERREUR_DIVERS = "Un problème a été rencontré avec le serveur.";
+    
+    private final String ERREUR_MEME_DESTINATION = "Vous ne pouvez pas choisir en destination une station où vous vous trouvez déjà.";
     
     private ServiceClient service;
     
@@ -60,6 +73,10 @@ public class AppLourdClient {
     private String identifiant;
     
     private String token;
+    
+    private String stationRattachement;
+    
+    boolean voyageEnCours;
     
     public AppLourdClient() throws NamingException {
         service = new ServiceClient();
@@ -94,15 +111,14 @@ public class AppLourdClient {
     
     public void indicationStationRattachement() {
         ConsoleAuthentifier console;
-        String station;
         boolean valide;
         
         console = new ConsoleAuthentifier(service);
         do {
             valide = true;
-            station = console.renseignerStation();
+            stationRattachement = console.renseignerStation();
             try {
-                compteRMIService.getServiceCompteRemote().renseignerStationRattachement(infosCompte(), station);
+                compteRMIService.getServiceCompteRemote().renseignerStationRattachement(infosCompte(), stationRattachement);
             } catch (TokenInvalideException ex) {
                 valide = false;
                 System.out.println(ERREUR_ACCES_NON_AUTORISE);
@@ -134,7 +150,44 @@ public class AppLourdClient {
     
     public void reserverVoyage() {
         ListeChoix liste;
+        String stationDestination,
+               dateArrivee;
+        ConsoleVoyage console;
+        boolean valide;
+        int nbPassagers;
         
+        do {
+            valide = true;
+            console = new ConsoleVoyage(service);
+            liste = new ListeChoix(stationRMIService.getServiceStationRemote().listeStations(stationRattachement));
+            stationDestination = console.saisieVoyage(liste);
+            dateArrivee = console.saisieDateArrivee();
+            nbPassagers = console.saisieNbPassagers();
+            try {
+                navetteRMIService.getServiceNavetteRemote().reserve(infosCompte(), stationRattachement, stationDestination, dateArrivee, nbPassagers);
+            } catch (TokenInvalideException ex) {
+                valide = false;
+                System.out.println(ERREUR_ACCES_NON_AUTORISE);
+            } catch (AucuneDestinationException ex) {
+                valide = false;
+                System.out.println(ERREUR_DESTINATION_INEXISTANTE);
+            } catch (QuaiIndisponibleException ex) {
+                valide = false;
+                System.out.println(ERREUR_QUAI_INDISPONIBLE);
+            } catch (StationInexistanteException ex) {
+                valide = false;
+                System.out.println(ERREUR_STATION_INEXISTANTE);
+            } catch (NavettesIndisponibleException ex) {
+                valide = false;
+                System.out.println(ERREUR_NAVETTE_INDISPONIBLE);
+            } catch (ParseException ex) {
+                valide = false;
+                System.out.println(ERREUR_DIVERS);
+            } catch (DestinationIncorrecteException ex) {
+                System.out.println(ERREUR_MEME_DESTINATION);
+            }
+        } while (!valide);
+        voyageEnCours = true;
     }
     
     public String[] infosCompte() {
@@ -158,6 +211,7 @@ public class AppLourdClient {
         }
         if (bienArrivee) {
             System.out.println("Vous êtes bien arrivé à destination.");
+            voyageEnCours = false;
         }
     }
     
@@ -171,18 +225,43 @@ public class AppLourdClient {
         
     }
     
+    public void deconnexion() {
+        token = null;
+        System.out.println("Vous êtes maintenant déconnecté.");
+    }
+    
     public void menu() {
         int choix;
         boolean executionEnCours;
         
         executionEnCours = true;
+        if (voyageEnCours) {
+            System.out.println("Vous êtes bien arrivé sur la station " + stationRattachement + " !");
+            indiquerArrivee();
+        }
         do {
             if (token != null) {
-                choix = service.saisieNombre(TEXTE_MENU_CONNECTE, 1, 6);
+                choix = service.saisieNombre(TEXTE_MENU_CONNECTE, 1, 4);
+                switch (choix) {
+                case 1:
+                    System.out.println("Réservation d'un voyage.");
+                    reserverVoyage();
+                    break;
+                case 2:
+                    System.out.println("Accès à la carte");
+                    visualiserCarte();
+                    break;
+                case 3:
+                    System.out.println("Déconnexion.");
+                    deconnexion();
+                    break;
+                default:
+                    executionEnCours = false;
+                    System.out.println("Merci d'avoir utilisé nos services.");
+                }
             } else {
                 choix = service.saisieNombre(TEXTE_MENU_NON_CONNECTE, 1, 3);
-            }
-            switch (choix) {
+                switch (choix) {
                 case 1:
                     System.out.println("Création d'un compte.");
                     creerCompte();
@@ -191,26 +270,10 @@ public class AppLourdClient {
                     System.out.println("Demande de connexion.");
                     authentifier();
                     break;
-                case 3:
-                    if (token != null) {
-                        System.out.println("Réservation d'un voyage.");
-                        reserverVoyage();
-                    } else {
-                        executionEnCours = false;
-                        System.out.println("Merci d'avoir utilisé nos services.");
-                    }
-                    break;
-                case 4:
-                    System.out.println("Indiquer son arrivé");
-                    indiquerArrivee();
-                    break;
-                case 5:
-                    System.out.println("Accès à la carte");
-                    visualiserCarte();
-                    break;
                 default:
                     executionEnCours = false;
                     System.out.println("Merci d'avoir utilisé nos services.");
+                }
             }
         } while (executionEnCours);
     }

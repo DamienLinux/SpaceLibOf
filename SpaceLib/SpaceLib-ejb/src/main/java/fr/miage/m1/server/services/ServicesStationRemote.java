@@ -31,5 +31,10 @@ public class ServicesStationRemote implements ServicesStationRemoteRemote {
         return gestionStation.carteStations();
        
     }
+
+    @Override
+    public List<String> listeStations(String stationRattachement) {
+        return gestionStation.listeStations(stationRattachement);
+    }
     
 }

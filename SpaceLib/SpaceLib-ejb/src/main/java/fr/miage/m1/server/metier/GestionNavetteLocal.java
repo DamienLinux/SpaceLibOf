@@ -6,6 +6,7 @@
 package fr.miage.m1.server.metier;
 
 import fr.miage.m1.shared.exceptions.AucuneDestinationException;
+import fr.miage.m1.shared.exceptions.DestinationIncorrecteException;
 import fr.miage.m1.shared.exceptions.NavetteExistanteException;
 import fr.miage.m1.shared.exceptions.NavetteInexistanteException;
 import fr.miage.m1.shared.exceptions.NavettePasAReviserException;
@@ -28,10 +29,10 @@ import javax.ejb.Local;
 public interface GestionNavetteLocal {
     public void reserve(String[] infosCompte, String stationAttachement, String destination, 
                         String dateArrivee, int nbPassagers)
-                throws TokenInvalideException, NavetteInexistanteException,
-                       AucuneDestinationException, QuaiIndisponibleException,
-                       StationInexistanteException, NavettesIndisponibleException,
-                       ParseException;
+                throws TokenInvalideException, AucuneDestinationException, 
+                       QuaiIndisponibleException, StationInexistanteException, 
+                       NavettesIndisponibleException, ParseException,
+                       DestinationIncorrecteException;
     
     public void voyageAcheve(String[] infosCompte)
                 throws TokenInvalideException;
