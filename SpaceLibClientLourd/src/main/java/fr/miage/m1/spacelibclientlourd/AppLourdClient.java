@@ -297,7 +297,8 @@ public class AppLourdClient {
                     break;
                 case 4:
                     System.out.println("Annulation.");
-                    
+                    annulerReservation();
+                    break;
                 default:
                     executionEnCours = false;
                     System.out.println("Merci d'avoir utilisé nos services.");
